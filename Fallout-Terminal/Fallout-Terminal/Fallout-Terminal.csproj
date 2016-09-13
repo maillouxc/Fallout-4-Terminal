@@ -59,6 +59,8 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Compile Include="Source\Logic\GarbageCharacterGenerator.cs" />
+    <Compile Include="Source\Logic\RNG.cs" />
     <Compile Include="Source\UI\App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
@@ -100,7 +102,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Resources\Sounds\" />
-    <Folder Include="Source\Logic\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
