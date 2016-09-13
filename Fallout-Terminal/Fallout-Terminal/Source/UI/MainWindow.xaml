@@ -20,7 +20,7 @@
         <Button x:Name="powerButton" Content="PWR" Grid.Column="2" HorizontalAlignment="Center" Margin="0" Grid.Row="2" VerticalAlignment="Center" Click="powerButton_Click" BorderThickness="4" Background="#FF0C0601" BorderBrush="#FFF00707" Foreground="#FFEC0303" Cursor="Hand" Width="60" Height="60" FontWeight="Bold" FontFamily="Segoe UI Black" FontSize="16" Padding="0"/>
         <RichTextBox x:Name="TerminalScreen" Grid.Column="1" HorizontalAlignment="Center" Margin="10" Grid.Row="1" VerticalAlignment="Center" BorderThickness="5" Cursor="None" Width="442" Height="380" FontFamily="Lucida Console" FontSize="14" AcceptsReturn="False" AutoWordSelection="False" IsReadOnly="True" IsUndoEnabled="False" Foreground="#FF5AC500" SelectionBrush="#FF15C104" BorderBrush="#FF000104" TextChanged="TerminalScreen_TextChanged" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" UndoLimit="0">
             <RichTextBox.Background>
-                <ImageBrush ImageSource="Resources/Images/TerminalScreenBackground.png" Stretch="None"/>
+                <ImageBrush ImageSource="../../Resources/Images/TerminalScreenBackground.png" Stretch="None"/>
             </RichTextBox.Background>
             <FlowDocument x:Name="screenText" Cursor="None" IsColumnWidthFlexible="False">
                 <Paragraph>
