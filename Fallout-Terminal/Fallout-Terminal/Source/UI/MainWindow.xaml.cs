@@ -12,6 +12,7 @@ namespace Fallout_Terminal
         {
             InitializeComponent();
         }
+
         private void powerButton_Click(object sender, RoutedEventArgs e)
         {
             //TODO Add Logic for Power Button.
