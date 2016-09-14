@@ -1,7 +1,7 @@
 # Fallout-4-Terminal
 My attempt to recreate the hacking minigame from the terminals in Fallout 4. (The core concept of the minigame is similar in Fallout 3 
 and New Vegas as well, but the exact execution is slightly different in each one. My implementation is intended to model as closely as 
-possible the way it is done in FO4.
+possible the way it is done in FO4.)
 
 I'm doing this as an exercise to build my own skills, especially with technologies that I haven't worked with before. It's my first 
 programming project in a while, and my first one on GitHub, and it may take me a while to get it up and running.
