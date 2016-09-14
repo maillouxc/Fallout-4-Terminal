@@ -11,7 +11,9 @@ learn what life is like on the .NET framework side of things. Naturally, this me
 project, so a lot of my commits will undoubtedly be to undo things I previously did as I wrestle with an unfamiliar language trying to 
 discover the best way to do everything.
 
-So far, going from Java to C# was a much steeper learning curve than expected, but I thing I'm starting to get the hang of things.
+So far, going from Java to C# was a much steeper learning curve than expected, but I think I'm starting to get the hang of things. 
+I'm working on this in between my coursework, which is already on a tight schedule, so progress will likely be pretty slow, but my 
+goal is to get it done before the end of October.
 
 I'd absolutely love any feedback (positive or negative) or suggestions that anyone is willing to provide, as this is a learning 
 experience for me. The best way to contact me is via email at mailloux.cl@gmail.com
