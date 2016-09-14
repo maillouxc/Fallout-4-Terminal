@@ -6,7 +6,7 @@ possible the way it is done in FO4.)
 I'm doing this as an exercise to build my own skills, especially with technologies that I haven't worked with before. It's my first 
 programming project in a while, and my first one on GitHub, and it may take me a while to get it up and running.
 
-Since the majority of my programming life has been spent split between the Java world, I figured I'd try to create this in C# so I could 
+Since the majority of my programming life has been spent in the Java world, I figured I'd try to create this in C# so I could 
 learn what life is like on the .NET framework side of things. Naturally, this means I'm learning the language as I'm building the 
 project, so a lot of my commits will undoubtedly be to undo things I previously did as I wrestle with an unfamiliar language trying to 
 discover the best way to do everything.
