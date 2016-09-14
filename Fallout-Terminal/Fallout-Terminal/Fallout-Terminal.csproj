@@ -60,7 +60,6 @@
       <SubType>Designer</SubType>
     </Page>
     <Compile Include="Source\Logic\GarbageCharacterGenerator.cs" />
-    <Compile Include="Source\Logic\RNG.cs" />
     <Compile Include="Source\UI\App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
@@ -95,7 +94,9 @@
     <AppDesigner Include="Properties\" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Source\UI\App.config" />
+    <None Include="Source\UI\App.config">
+      <SubType>Designer</SubType>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Resources\Images\TerminalScreenBackground.png" />

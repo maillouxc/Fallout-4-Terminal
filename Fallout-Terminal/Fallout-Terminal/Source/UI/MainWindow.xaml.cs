@@ -14,8 +14,12 @@ namespace Fallout_Terminal
         {
             InitializeComponent();
             // TESTING:
-            Console.WriteLine("Random number is " + (RNG.GetRandomInt(1, 7)));
-
+            GarbageCharacterGenerator garbageGenerator = new GarbageCharacterGenerator();
+            for(int i=0; i<1000; i++)
+            {
+                char temp = garbageGenerator.GetGarbageCharacter();
+                Console.Write(temp);
+            }        
         }
 
         private void powerButton_Click(object sender, RoutedEventArgs e)

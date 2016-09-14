@@ -9,10 +9,17 @@ namespace Fallout_Terminal.Source.Logic
     {
         Random random = new Random();
 
-        private char GetGarbageCharacter()
+        private static char[] garbageCharacters =
+            {'!', '(', ')', '{', '}', '<', '>', '[', ']', '/', '\\', '|', '$',
+            '@', ',', '\'', ';', ':', '?', '*', '^', '=', '.', '-', '+', '&', '_', '%', '#'};
+
+        /// <summary>
+        /// Returns a random garbage character to populate the spaces in the terminal.
+        /// </summary>
+        /// <returns>A char which is one of the allowed garbage characters.</returns>
+        internal char GetGarbageCharacter()
         {
-            // TEMPORARY
-            return 'x';
+            return garbageCharacters[random.Next(0, garbageCharacters.Length)];
         }
     }
 }
