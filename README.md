@@ -1,12 +1,22 @@
 # Fallout-4-Terminal
-My attempt to recreate the terminals from Fallout 4, starting with the hacking mini-game. My goal is to get as close of a recreation as
-possible to how it works in the game, as an exercise to build my own skills, especially with new technologies. I'll be starting with the 
-hacking mini-game, but I'm considering adding the ability to create basic text files, as a  journal of sorts, and maybe ping a database
-to store the entries online.
+My attempt to recreate the hacking minigame from the terminals in Fallout 4. (The core concept of the minigame is similar in Fallout 3 
+and New Vegas as well, but the exact execution is slightly different in each one. My implementation is intended to model as closely as 
+possible the way it is done in FO4.
 
-It's my first programming project in a long time, and my first one on GitHub, and it may take me a while to get it up and running.
-My goal is to implement it in a language that I don't know, and I think I've settled on C# and the .NET platform, since I've got a fairly
-good grasp on Java already.
+I'm doing this as an exercise to build my own skills, especially with technologies that I haven't worked with before. It's my first 
+programming project in a while, and my first one on GitHub, and it may take me a while to get it up and running.
 
-Naturally, this means I have to learn the language before I can start working on the project, so it may be a while until any meaningful 
-work is done.
+Since the majority of my programming life has been spent split between the Java world, I figured I'd try to create this in C# so I could 
+learn what life is like on the .NET framework side of things. Naturally, this means I'm learning the language as I'm building the 
+project, so a lot of my commits will undoubtedly be to undo things I previously did as I wrestle with an unfamiliar language trying to 
+discover the best way to do everything.
+
+So far, going from Java to C# was a much steeper learning curve than expected, but I thing I'm starting to get the hang of things.
+
+I'd absolutely love any feedback (positive or negative) or suggestions that anyone is willing to provide, as this is a learning 
+experience for me. The best way to contact me is via email at mailloux.cl@gmail.com
+
+Note that I claim no liscense to any of the material in this project. You are free to distribute, copy, modify, or do otherwise with 
+anything in this repository, although I would ask that you give me credit if you choose to do so.
+
+If Bethesda decides that this infringes on copyright, I will take it down if requested.
