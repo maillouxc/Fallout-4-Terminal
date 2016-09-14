@@ -13,13 +13,39 @@ namespace Fallout_Terminal
         public MainWindow()
         {
             InitializeComponent();
-            // TESTING:
+
+
+            // TESTING: DO NOT USE IN PRODUCTION CODE
+            // Test garbage chars.
+            Console.WriteLine("\n");
             GarbageCharacterGenerator garbageGenerator = new GarbageCharacterGenerator();
             for(int i=0; i<1000; i++)
             {
                 char temp = garbageGenerator.GetGarbageCharacter();
                 Console.Write(temp);
-            }        
+            }
+            // Test charArray.
+            MainCharArray charArray = new MainCharArray();
+            Console.WriteLine("\n");
+            charArray.PrintCharArray();
+            Console.WriteLine("\n");
+           
+            // Add Header text to the charArray.
+            charArray.InsertString("ROBCO (TM) TERMLINK PROTOCOL                      ", 0, 0);
+            charArray.InsertString("                                                  ", 0, 1);
+            charArray.InsertString("Enter password now:                               ", 0, 2);
+            charArray.InsertString("                                                  ", 0, 3);
+            charArray.InsertString("Attempts remaining: # # # #                       ", 0, 4);
+            charArray.InsertString("                                                  ", 0, 5);
+
+            charArray.PrintCharArray();
+            // Add blank line after test results to make it easier to find things.
+            Console.WriteLine("\n");
+            // END TESTING
+
+
+
+
         }
 
         private void powerButton_Click(object sender, RoutedEventArgs e)
