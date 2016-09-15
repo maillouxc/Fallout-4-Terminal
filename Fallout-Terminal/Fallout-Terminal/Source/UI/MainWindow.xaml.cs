@@ -14,7 +14,6 @@ namespace Fallout_Terminal
         {
             InitializeComponent();
 
-
             // TESTING: DO NOT USE IN PRODUCTION CODE
             // Test garbage chars.
             Console.WriteLine("\n");
@@ -42,9 +41,6 @@ namespace Fallout_Terminal
             // Add blank line after test results to make it easier to find things.
             Console.WriteLine("\n");
             // END TESTING
-
-
-
 
         }
 

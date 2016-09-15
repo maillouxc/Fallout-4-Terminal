@@ -61,6 +61,7 @@
     </Page>
     <Compile Include="Source\Logic\MainCharArray.cs" />
     <Compile Include="Source\Logic\GarbageCharacterGenerator.cs" />
+    <Compile Include="Source\Logic\PasswordsManager.cs" />
     <Compile Include="Source\UI\App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
@@ -104,6 +105,9 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Resources\Sounds\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Misc\words.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
