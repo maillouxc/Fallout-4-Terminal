@@ -7,6 +7,8 @@ namespace Fallout_Terminal.Source.Logic
     /// </summary>
     class MainCharArray
     {
+        // TODO: Consider extracting some functionality to superclass.
+
         private const int MAX_HORIZONTAL_CHARACTERS = 50;
         private const int MAX_VERTICAL_CHARACTERS = 28;
         
@@ -106,8 +108,6 @@ namespace Fallout_Terminal.Source.Logic
                     currentYPosition++;
                 }
             }
-
-            // TODO: Finish method.
         }
     }
 }

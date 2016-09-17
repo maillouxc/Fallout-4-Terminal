@@ -1,13 +1,19 @@
 ﻿namespace Fallout_Terminal.Source.Logic
 {
-    // TODO: Documentation.
+    /// <summary>
+    /// Handles everything to do with how the rest of the game interacts with passwords.
+    /// This includes things like storing the list of potential passwords, storing the correct password,
+    /// checking if a given password is correct, etc.
+    /// </summary>
     public class PasswordsManager
     {
         private string correctPassword;
         private int numberOfPasswordsToGenerate;
-        private int passwordLength;
 
-        // TODO: Documentation.
+        /// <summary>
+        /// Property storing the list of potential password choices that
+        /// the player can pick from.
+        /// </summary>
         internal string[] potentialPasswords
         {
             get;
@@ -32,9 +38,24 @@
             }
         }
 
+        /// <summary>
+        /// Returns the number of characters in common with the correct password.
+        /// </summary>
+        /// <param name="passwordToCheck"></param>
+        /// <returns>The number of characters in common with the correct password.</returns>
         private int GetNumberOfCorrectChars(string passwordToCheck)
         {
-            // TODO: Write Method.
+            int numberCorrect = 0;
+
+            for(int i = 0; i < correctPassword.Length; i++)
+            {
+                if(passwordToCheck[i] == correctPassword[i])
+                {
+                    numberCorrect++;
+                }
+            }
+
+            return numberCorrect;
         }
     }
 }
