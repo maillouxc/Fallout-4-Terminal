@@ -59,6 +59,11 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Compile Include="Source\Logic\PasswordGenerator.cs" />
+    <Compile Include="Source\Logic\MainCharArray.cs" />
+    <Compile Include="Source\Logic\GarbageCharacterGenerator.cs" />
+    <Compile Include="Source\Logic\PasswordsManager.cs" />
+    <Compile Include="Source\Logic\Utilities\RandomProvider.cs" />
     <Compile Include="Source\UI\App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
@@ -93,14 +98,18 @@
     <AppDesigner Include="Properties\" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="App.config" />
+    <None Include="Source\UI\App.config">
+      <SubType>Designer</SubType>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Resources\Images\TerminalScreenBackground.png" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Resources\Sounds\" />
-    <Folder Include="Source\Logic\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Misc\words.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
