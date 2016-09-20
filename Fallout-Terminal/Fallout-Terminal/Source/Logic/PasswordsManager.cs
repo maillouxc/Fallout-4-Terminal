@@ -10,6 +10,15 @@
         private string correctPassword;
         private int numberOfPasswordsToGenerate;
 
+        private PasswordGenerator passwordGenerator;
+        // TODO: Use this ^
+
+        public PasswordsManager()
+        {
+            this.passwordGenerator = new PasswordGenerator();
+            // TODO: Finish constructor.
+        }
+
         /// <summary>
         /// Property storing the list of potential password choices that
         /// the player can pick from.
