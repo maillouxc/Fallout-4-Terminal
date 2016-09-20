@@ -60,9 +60,10 @@
       <SubType>Designer</SubType>
     </Page>
     <Compile Include="Source\Logic\PasswordGenerator.cs" />
-    <Compile Include="Source\Logic\MainCharArray.cs" />
+    <Compile Include="Source\Logic\MainCharGrid.cs" />
     <Compile Include="Source\Logic\GarbageCharacterGenerator.cs" />
     <Compile Include="Source\Logic\PasswordsManager.cs" />
+    <Compile Include="Source\Logic\CharGrid.cs" />
     <Compile Include="Source\Logic\Utilities\RandomProvider.cs" />
     <Compile Include="Source\UI\App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>

@@ -26,7 +26,7 @@ namespace Fallout_Terminal
                 Console.Write(temp);
             }
             // Test charArray.
-            MainCharArray charArray = new MainCharArray();
+            MainCharGrid charArray = new MainCharGrid();
             Console.WriteLine("");
             charArray.PrintCharArray();
             Console.WriteLine("");
