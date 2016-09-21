@@ -100,6 +100,22 @@
     <AppDesigner Include="Properties\" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Resources\Sounds\correctPassword.ogg" />
+    <None Include="Resources\Sounds\enterKey.ogg" />
+    <None Include="Resources\Sounds\powerOff.ogg" />
+    <None Include="Resources\Sounds\powerOn.ogg" />
+    <None Include="Resources\Sounds\typing1.ogg" />
+    <None Include="Resources\Sounds\typing10.ogg" />
+    <None Include="Resources\Sounds\typing11.ogg" />
+    <None Include="Resources\Sounds\typing2.ogg" />
+    <None Include="Resources\Sounds\typing3.ogg" />
+    <None Include="Resources\Sounds\typing4.ogg" />
+    <None Include="Resources\Sounds\typing5.ogg" />
+    <None Include="Resources\Sounds\typing6.ogg" />
+    <None Include="Resources\Sounds\typing7.ogg" />
+    <None Include="Resources\Sounds\typing8.ogg" />
+    <None Include="Resources\Sounds\typing9.ogg" />
+    <None Include="Resources\Sounds\wrongPassword.ogg" />
     <None Include="Source\UI\App.config">
       <SubType>Designer</SubType>
     </None>
@@ -107,9 +123,7 @@
   <ItemGroup>
     <Resource Include="Resources\Images\TerminalScreenBackground.png" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Resources\Sounds\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <Resource Include="Resources\Misc\words.txt" />
   </ItemGroup>
