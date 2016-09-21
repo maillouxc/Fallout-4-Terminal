@@ -1,4 +1,5 @@
 ﻿using Fallout_Terminal.Source.Logic;
+using Fallout_Terminal.Source.Logic.CharGrid;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -32,23 +33,38 @@ namespace Fallout_Terminal
             Console.WriteLine("");
            
             // Add Header text to the charArray.
-            charArray.InsertString("ROBCO (TM) TERMLINK PROTOCOL                      ", 0, 0);
+            charArray.InsertString("Welcome to ROBCO Industries (TM) Termlink         ", 0, 0);
             charArray.InsertString("                                                  ", 0, 1);
-            charArray.InsertString("Enter password now:                               ", 0, 2);
+            charArray.InsertString("Password Required                                 ", 0, 2);
             charArray.InsertString("                                                  ", 0, 3);
-            charArray.InsertString("Attempts remaining: # # # #                       ", 0, 4);
+            charArray.InsertString("Attempts Remaining: # # # #                       ", 0, 4);
             charArray.InsertString("                                                  ", 0, 5);
             charArray.PrintCharArray();
             Console.WriteLine("");
 
-            // Test password generator.
-            PasswordGenerator passwordGenerator = new PasswordGenerator();
+            // Test password generation...
             List<string> testPasswords = new List<string>();
-            testPasswords = passwordGenerator.GeneratePotentialPasswords(9, 7);
+            PasswordsManager manager = new PasswordsManager();
+            testPasswords = manager.GetPasswordsWithEnoughLettersInCommon(9, 4, 50);
             for(int i = 0; i < testPasswords.Count; i++)
             {
                 Console.Write(testPasswords.ElementAt(i).ToString() + ", ");
             }
+
+            // Test InputCharArray
+            InputCharGrid inputCharGrid = new InputCharGrid();
+            for(int i = 0; i < 20; i++)
+            {
+                inputCharGrid.InsertString("Entry denied.", 0, 0);
+            }
+            inputCharGrid.InsertString("Testing.", 0, 0);
+            inputCharGrid.InsertString("Success!", 0, 0);
+            inputCharGrid.InsertString("Error.", 0, 0);
+            inputCharGrid.InsertString("$", 0, 0);
+            inputCharGrid.InsertString("Chris.", 0, 0);
+            inputCharGrid.InsertString("Testing.", 0, 0);
+            inputCharGrid.InsertString("Init Lockout.", 0, 0);
+            inputCharGrid.PrintCharArray();
 
             // Add blank line after test results to make it easier to find things.
             Console.WriteLine("\n");

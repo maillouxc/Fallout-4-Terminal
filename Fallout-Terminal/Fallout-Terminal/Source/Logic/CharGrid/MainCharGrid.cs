@@ -2,7 +2,7 @@
 using System;
 using System.Windows;
 
-namespace Fallout_Terminal.Source.Logic
+namespace Fallout_Terminal.Source.Logic.CharGrid
 {
     /// <summary>
     /// This class contains the main character grid that models the text on the screen at any given time.
