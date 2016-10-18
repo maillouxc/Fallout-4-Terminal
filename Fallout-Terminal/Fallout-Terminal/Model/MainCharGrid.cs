@@ -1,8 +1,7 @@
-﻿using Fallout_Terminal.Source.Logic;
-using System;
+﻿using System;
 using System.Windows;
 
-namespace Fallout_Terminal.Source.Logic.CharGrid
+namespace Fallout_Terminal.Model
 {
     /// <summary>
     /// This class contains the main character grid that models the text on the screen at any given time.
@@ -13,7 +12,7 @@ namespace Fallout_Terminal.Source.Logic.CharGrid
     public class MainCharGrid : CharGrid
     {
         private const int WIDTH = 50;
-        private const int HEIGHT = 28;
+        private const int HEIGHT = 22;
 
         /// <summary>
         /// Does nothing but call the base constructor to initialize class fields.

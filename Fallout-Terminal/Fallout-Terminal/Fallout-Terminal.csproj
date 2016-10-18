@@ -51,26 +51,30 @@
     <Reference Include="PresentationFramework" />
   </ItemGroup>
   <ItemGroup>
-    <ApplicationDefinition Include="Source\UI\App.xaml">
+    <ApplicationDefinition Include="View\App.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Page Include="Source\UI\MainWindow.xaml">
+    <Page Include="View\MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Compile Include="Source\Logic\CharGrid\InputCharGrid.cs" />
-    <Compile Include="Source\Logic\PasswordGenerator.cs" />
-    <Compile Include="Source\Logic\CharGrid\MainCharGrid.cs" />
-    <Compile Include="Source\Logic\GarbageCharacterGenerator.cs" />
-    <Compile Include="Source\Logic\PasswordsManager.cs" />
-    <Compile Include="Source\Logic\CharGrid\CharGrid.cs" />
-    <Compile Include="Source\Logic\Utilities\RandomProvider.cs" />
-    <Compile Include="Source\UI\App.xaml.cs">
+    <Compile Include="Model\HexList.cs" />
+    <Compile Include="Model\InputCharGrid.cs" />
+    <Compile Include="Model\MemoryDump.cs" />
+    <Compile Include="Model\PasswordGenerator.cs" />
+    <Compile Include="Model\MainCharGrid.cs" />
+    <Compile Include="Model\GarbageCharacterGenerator.cs" />
+    <Compile Include="Model\PasswordManager.cs" />
+    <Compile Include="Model\CharGrid.cs" />
+    <Compile Include="Model\RandomProvider.cs" />
+    <Compile Include="Model\TerminalModel.cs" />
+    <Compile Include="ViewModel\TerminalViewModel.cs" />
+    <Compile Include="View\App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Source\UI\MainWindow.xaml.cs">
+    <Compile Include="View\MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
@@ -100,16 +104,30 @@
     <AppDesigner Include="Properties\" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Source\UI\App.config">
+    <None Include="Resources\Sounds\correctPassword.ogg" />
+    <None Include="Resources\Sounds\enterKey.ogg" />
+    <None Include="Resources\Sounds\powerOff.ogg" />
+    <None Include="Resources\Sounds\powerOn.ogg" />
+    <None Include="Resources\Sounds\typing1.ogg" />
+    <None Include="Resources\Sounds\typing10.ogg" />
+    <None Include="Resources\Sounds\typing11.ogg" />
+    <None Include="Resources\Sounds\typing2.ogg" />
+    <None Include="Resources\Sounds\typing3.ogg" />
+    <None Include="Resources\Sounds\typing4.ogg" />
+    <None Include="Resources\Sounds\typing5.ogg" />
+    <None Include="Resources\Sounds\typing6.ogg" />
+    <None Include="Resources\Sounds\typing7.ogg" />
+    <None Include="Resources\Sounds\typing8.ogg" />
+    <None Include="Resources\Sounds\typing9.ogg" />
+    <None Include="Resources\Sounds\wrongPassword.ogg" />
+    <None Include="App.config">
       <SubType>Designer</SubType>
     </None>
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Resources\Images\TerminalScreenBackground.png" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Resources\Sounds\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <Resource Include="Resources\Misc\words.txt" />
   </ItemGroup>
