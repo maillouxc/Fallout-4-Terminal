@@ -1,33 +1,36 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
-namespace Fallout_Terminal.Source.Logic
+namespace Fallout_Terminal.Model
 {
     /// <summary>
     /// Handles everything to do with how the rest of the game interacts with passwords.
     /// This includes things like storing the list of potential passwords, storing the correct password,
     /// checking if a given password is correct, etc.
     /// </summary>
-    public class PasswordsManager
+    public class PasswordManager
     {
-        private string correctPassword;
-        private int numberOfPasswordsToGenerate;
+        // TODO: Determine programmatically.
+        private const int DEFAULT_NUMBER_OF_PASSWORDS = 8;
+        private const int DEFAULT_PASSWORD_LENGTH = 6;
 
-        private PasswordGenerator passwordGenerator;
-        // TODO: Use this ^
+        public List<string> PotentialPasswords;
 
-        public PasswordsManager()
+        private string CorrectPassword;
+        private int NumberOfPasswordsToGenerate;
+        public int PasswordLength;
+        private PasswordGenerator PasswordGenerator;
+
+        public PasswordManager()
         {
-            this.passwordGenerator = new PasswordGenerator();
-            // TODO: Finish constructor.
-        }
+            NumberOfPasswordsToGenerate = DEFAULT_NUMBER_OF_PASSWORDS;
+            PasswordLength = DEFAULT_PASSWORD_LENGTH;
+            PasswordGenerator = new PasswordGenerator();
+            PotentialPasswords = PasswordGenerator.GeneratePasswords(NumberOfPasswordsToGenerate, PasswordLength);
+            ChooseACorrectPassword();
 
-        /// <summary>
-        /// Property storing the list of potential password choices that
-        /// the player can pick from.
-        /// </summary>
-        internal string[] potentialPasswords
-        {
-            get;
+            // TESTING:
+            Console.WriteLine(CorrectPassword);
         }
 
         /// <summary>
@@ -37,7 +40,7 @@ namespace Fallout_Terminal.Source.Logic
         /// otherwise the number of characters in common with the correct password.</returns>
         internal int CheckPassword(string passwordToCheck)
         {
-            if(passwordToCheck == correctPassword)
+            if(passwordToCheck == CorrectPassword)
             {
                 return -1;
             }
@@ -58,15 +61,21 @@ namespace Fallout_Terminal.Source.Logic
         {
             int numberCorrect = 0;
 
-            for(int i = 0; i < correctPassword.Length; i++)
+            for(int i = 0; i < CorrectPassword.Length; i++)
             {
-                if(passwordToCheck[i] == correctPassword[i])
+                if(passwordToCheck[i] == CorrectPassword[i])
                 {
                     numberCorrect++;
                 }
             }
 
             return numberCorrect;
+        }
+
+        private void ChooseACorrectPassword()
+        {
+            Random random = new Random();
+            CorrectPassword = PotentialPasswords[random.Next(0, (PotentialPasswords.Count - 1))];
         }
 
         internal List<string> GetPasswordsWithEnoughLettersInCommon(int howManyPasswords, int passwordLength, int howManyInCommon)
@@ -78,7 +87,7 @@ namespace Fallout_Terminal.Source.Logic
             // There is almost certainly a better way to do this, but that is a job for later.
             while (enoughLettersInCommon == false)
             {
-                passwords = passwordGenerator.GeneratePotentialPasswords(howManyPasswords, passwordLength);
+                passwords = PasswordGenerator.GeneratePasswords(howManyPasswords, passwordLength);
                 enoughLettersInCommon = EnoughLettersInCommon(passwords, howManyInCommon);
             }
             return passwords;

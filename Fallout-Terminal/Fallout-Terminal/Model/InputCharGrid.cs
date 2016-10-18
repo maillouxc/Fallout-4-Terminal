@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 
-namespace Fallout_Terminal.Source.Logic.CharGrid
+namespace Fallout_Terminal.Model
 {
     /// <summary>
     /// The CharGrid that holds the input column on the right side of the screen.

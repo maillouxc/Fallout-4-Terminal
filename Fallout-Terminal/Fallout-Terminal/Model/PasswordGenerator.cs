@@ -2,13 +2,13 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Fallout_Terminal.Source.Logic
+namespace Fallout_Terminal.Model
 {
     /// <summary>
     /// This class will read a list of potential passwords from a file, and 
     /// will handle supplying the game with a list of passwords to use in gameplay as choices.
     /// </summary>
-    class PasswordGenerator
+    public class PasswordGenerator
     {
         private List<string> wordsFromFile;
         const string DEFAULT_WORDLIST_PATH = @"..\..\Resources\Misc\words.txt";
@@ -38,7 +38,7 @@ namespace Fallout_Terminal.Source.Logic
         /// <param name="numberToGenerate">The number of potential passwords to generate.</param>
         /// <param name="desiredLength">The desired length of each password.</param>
         /// <returns>The list of potential passwords that will be used in the game.</returns>
-        public List<string> GeneratePotentialPasswords(int numberToGenerate, int desiredLength)
+        public List<string> GeneratePasswords(int numberToGenerate, int desiredLength)
         {
             // TODO: Optimize memory usage of dictionary.
             List<string> potentialPasswords = new List<string>();

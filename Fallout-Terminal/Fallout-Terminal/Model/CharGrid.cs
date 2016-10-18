@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Fallout_Terminal.Source.Logic.CharGrid
+namespace Fallout_Terminal.Model
 {
     /// <summary>
     /// Abstract superclass for char grids, containing methods common to all CharGrids.
