@@ -30,9 +30,8 @@ namespace Fallout_Terminal
             viewModel = FindResource("viewModel") as ViewModel.TerminalViewModel;          
         }
 
-
         /// <summary>
-        /// A method with various things to execute once the window is fully loaded. Fixes that pesky focus bug.
+        /// A method filled with various things to execute once the window is fully loaded. Fixes that pesky focus bug.
         /// This method should NOT be left like this in the final program. Most of the stuff in here is for testing purposes.
         /// </summary>
         /// <param name="sender"></param>
@@ -41,7 +40,7 @@ namespace Fallout_Terminal
         {
             // TESTING: DO NOT USE IN PRODUCTION CODE
 
-            // Test UI stuff.
+            // Test some stuff todo with character selection.
             LeftPasswordColumn.Focus();
             LeftPasswordColumn.Document.Blocks.Clear();
             LeftPasswordColumn.Document.Blocks.Add(new Paragraph(new Run("GJFJGJHUTIYLGJFJGJHUTIYLGJFJGJHUTIYLGJFJGJHUTIYLGJFJGJHUTIYLGJFJGJHUTIYLGJFJGJHUTIYLGJFJGJHUTIYLGJFJGJHUTIYLGJFJGJHUTIYLGJFJGJHUTIYLGJFJGJHUTIYLGJFJGJHUTIYLGJFJGJHUTIYLGJFJGJHUTIYLGJFJGJHUTIYL")));
@@ -61,8 +60,6 @@ namespace Fallout_Terminal
             end2 = end2.GetPositionAtOffset(-3);
             RightPasswordColumn.Selection.Select(start2, end2);
             RightPasswordColumn.IsInactiveSelectionHighlightEnabled = true;
-
-
         }
 
         private void powerButton_Click(object sender, RoutedEventArgs e)
@@ -73,6 +70,7 @@ namespace Fallout_Terminal
         private void TerminalScreen_TextChanged(object sender, TextChangedEventArgs e)
         {
             // TODO Determine what logic, if any, needs to go here.
+            // Possibly sound logic?
         }
     }
 }
