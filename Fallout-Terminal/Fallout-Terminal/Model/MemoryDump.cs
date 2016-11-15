@@ -8,6 +8,8 @@ namespace Fallout_Terminal.Model
 {
     public class MemoryDump
     {
+        Random random = new Random();
+
         // Number of Columns * Width of Columns * Number of Rows.
         private const int LENGTH = 384;
 
@@ -46,15 +48,14 @@ namespace Fallout_Terminal.Model
 
         private void PopulateContentsWithPasswords()
         {
-            Random random = new Random();
             for (int index = 0; index < passwords.Count; index++)
             {
                 int position = 0;
                 bool success = false;
-                position = random.Next(0, (LENGTH - 1));
                 while(!success)
                 {
-                    if(IsRoomForPassword(position))
+                    position = random.Next(0, (LENGTH - 1));
+                    if (IsRoomForPassword(position))
                     {
                         for(int j = 0; j < passwords[index].Length; j++)
                         {
@@ -72,20 +73,24 @@ namespace Fallout_Terminal.Model
 
         private bool IsRoomForPassword(int position)
         {
-            // Note that this checks the length of only the first password, assuming all passwords are the same length.
-            for(int i = 0; i < passwords[0].Length; i++)
+            for (int i = 0; i < passwords[0].Length; i++)
             {
-                if((position + i) >= LENGTH)
+                if ((position + i) >= LENGTH)
                 {
                     // If true, the end of the password would run over the length of the string. No room!
                     return false;
                 }
-                if (IsLetter(Contents[position + i]) || IsLetter(Contents[position - 1]))
+            }
+            if ((position + (passwords[0].Length) + 1 <= LENGTH))
+            {
+                if (IsLetter(Contents[position + passwords[0].Length + 1]))
                 {
-                    // If true, there is already another password there!
-                    // Also checks to make sure there isn't another passwords too close!
                     return false;
                 }
+            }
+            if ((position != 0) && (IsLetter(Contents[position - 1])))
+            {
+                return false;
             }
             // If we got here, there is room.
             return true;

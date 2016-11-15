@@ -81,7 +81,6 @@
                 <ColumnDefinition Width="Auto">
                 </ColumnDefinition>
                 <ColumnDefinition Width="Auto">
-                    
                 </ColumnDefinition>
             </Grid.ColumnDefinitions>
             <Grid.RowDefinitions>
@@ -102,12 +101,9 @@
                        FontFamily="Lucida Console"
                        FontSize="16px"
                        Margin="5" 
-                       LineHeight="16">
-                <!-- Temporary text addition. -->
-                Welcome to ROBCO Industries (TM) Termlink<LineBreak/>Password Required
-                <!-- //////////////////////// -->
+                       LineHeight="16"
+                       Text="{Binding RobcoTextCurrentlyDisplayed}">
             </TextBlock>
-            <!-- TODO: Bind to data somewhere.-->
             <TextBlock Name="AttemptsText"
                        Grid.ColumnSpan="5"
                        Grid.RowSpan="1"
@@ -120,10 +116,8 @@
                        FontFamily="Lucida Console"
                        FontSize="16px"
                        Margin="5,10" 
-                       LineHeight="16">
-                <!-- Temporary text addition. -->
-                Attempts Remaining: &#x25AE; &#x25AE; &#x25AE; &#x25AE;
-                <!-- //////////////////////// -->
+                       LineHeight="16"
+                       Text="{Binding AttemptsTextCurrentlyDisplayed}">
             </TextBlock>
             <TextBlock Name="LeftHexColumn"
                        Grid.ColumnSpan="1"
@@ -137,25 +131,8 @@
                        FontFamily="Lucida Console"
                        FontSize="16px"
                        Margin="5,10,5,5" 
-                       LineHeight="12">
-                <!-- Temporary text addition. -->
-                0x41FF<LineBreak/>
-                0x41FF<LineBreak/>
-                0x41FF<LineBreak/>
-                0x41FF<LineBreak/>
-                0x41FF<LineBreak/>
-                0x41FF<LineBreak/>
-                0x41FF<LineBreak/>
-                0x41FF<LineBreak/>
-                0x41FF<LineBreak/>
-                0x41FF<LineBreak/>
-                0x41FF<LineBreak/>
-                0x41FF<LineBreak/>
-                0x41FF<LineBreak/>
-                0x41FF<LineBreak/>
-                0x41FF<LineBreak/>
-                0x41FF<LineBreak/>
-                <!-- //////////////////////// -->
+                       LineHeight="12"
+                       Text="{Binding LeftHexCurrentlyDisplayed}">
             </TextBlock>
             <TextBlock Name="RightHexColumn"
                        Grid.ColumnSpan="1"
@@ -169,25 +146,9 @@
                        FontFamily="Lucida Console" 
                        FontSize="16px"
                        Margin="5,10,5,5" 
-                       LineHeight="12">
-                <!-- Temporary text addition. -->
-                0x41FF<LineBreak/>
-                0x41FF<LineBreak/>
-                0x41FF<LineBreak/>
-                0x41FF<LineBreak/>
-                0x41FF<LineBreak/>
-                0x41FF<LineBreak/>
-                0x41FF<LineBreak/>
-                0x41FF<LineBreak/>
-                0x41FF<LineBreak/>
-                0x41FF<LineBreak/>
-                0x41FF<LineBreak/>
-                0x41FF<LineBreak/>
-                0x41FF<LineBreak/>
-                0x41FF<LineBreak/>
-                0x41FF<LineBreak/>
-                0x41FF<LineBreak/>
-                <!-- //////////////////////// -->
+                       LineHeight="12"
+                       Text="{Binding RightHexCurrentlyDisplayed}">
+
             </TextBlock>
             <RichTextBox Name="LeftPasswordColumn"
                        Grid.ColumnSpan="1"
@@ -206,7 +167,8 @@
                        BorderThickness="0" 
                        SelectionBrush="#FF0D8B00"
                        IsEnabled="True"
-                       IsReadOnly="True">
+                       IsReadOnly="True"
+                       >
                 <FlowDocument>
                 </FlowDocument>
             </RichTextBox>
