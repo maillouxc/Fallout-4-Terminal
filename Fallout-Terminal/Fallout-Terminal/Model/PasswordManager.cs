@@ -10,17 +10,21 @@ namespace Fallout_Terminal.Model
     /// </summary>
     public class PasswordManager
     {
-        // TODO: Determine programmatically.
+        // TODO: Determine programmatically, removing these constants.
         private const int DEFAULT_NUMBER_OF_PASSWORDS = 8;
         private const int DEFAULT_PASSWORD_LENGTH = 6;
 
         public List<string> PotentialPasswords;
 
+        private int PasswordLength;
         private string CorrectPassword;
         private int NumberOfPasswordsToGenerate;
-        public int PasswordLength;
         private PasswordGenerator PasswordGenerator;
 
+        /// <summary>
+        /// Creates a new PasswordManager object. Determines the length and number of passwords to generate, 
+        /// and generates the passwords via initializing a PasswordGenerator object, 
+        /// </summary>
         public PasswordManager()
         {
             NumberOfPasswordsToGenerate = DEFAULT_NUMBER_OF_PASSWORDS;
@@ -28,16 +32,13 @@ namespace Fallout_Terminal.Model
             PasswordGenerator = new PasswordGenerator();
             PotentialPasswords = PasswordGenerator.GeneratePasswords(NumberOfPasswordsToGenerate, PasswordLength);
             ChooseACorrectPassword();
-
-            // TESTING:
-            Console.WriteLine(CorrectPassword);
+            Console.WriteLine("Correct Password: " + CorrectPassword); // TESTING
         }
 
         /// <summary>
-        /// Checks the input password to see if it is correct. If
+        /// Checks the input password to see if it is correct. If the password is correct, returns -1,
+        /// else, returns the number of characters in common with the passwordToCheck argument provided.
         /// </summary>
-        /// <returns>-1 if the password is correct,
-        /// otherwise the number of characters in common with the correct password.</returns>
         internal int CheckPassword(string passwordToCheck)
         {
             if(passwordToCheck == CorrectPassword)
@@ -53,14 +54,11 @@ namespace Fallout_Terminal.Model
         }
 
         /// <summary>
-        /// Returns the number of characters in common with the correct password.
+        /// Returns the number of characters in common with the correct password. Should only be called by the CheckPassword method.
         /// </summary>
-        /// <param name="passwordToCheck"></param>
-        /// <returns>The number of characters in common with the correct password.</returns>
         private int GetNumberOfCorrectChars(string passwordToCheck)
         {
             int numberCorrect = 0;
-
             for(int i = 0; i < CorrectPassword.Length; i++)
             {
                 if(passwordToCheck[i] == CorrectPassword[i])
@@ -68,23 +66,30 @@ namespace Fallout_Terminal.Model
                     numberCorrect++;
                 }
             }
-
             return numberCorrect;
         }
 
+        /// <summary>
+        /// Called by the class constructor to pick a correct password out of the list of potential passwords stored in the class field.
+        /// </summary>
         private void ChooseACorrectPassword()
         {
+            // TODO: Consider using a RandomProvider rng instead.
             Random random = new Random();
             CorrectPassword = PotentialPasswords[random.Next(0, (PotentialPasswords.Count - 1))];
         }
 
+        /// Keeps generating lists until finding one with enough characters in common.
+        /// 'Enough characters' is determined by the passed argument, as are the number of passwords to generate,
+        /// and the length of the passwords to generate.
+        /// Does it's magic using an instance of the PasswordGenerator class possessed by this class.
+        /// This is O(scary), especially if the RNG is unkind, but we will see if it is problem or not through testing.
+        /// Working programs come first, after all! Optimization second!
+        /// There is almost certainly a better way to do this, but that is a job for later.
         internal List<string> GetPasswordsWithEnoughLettersInCommon(int howManyPasswords, int passwordLength, int howManyInCommon)
         {
             bool enoughLettersInCommon = false;
             List<string> passwords = new List<string>();
-            // Keep generating lists until we get one with enough in common.
-            // This could be O(scary), especially if the RNG is unkind, but we will see.
-            // There is almost certainly a better way to do this, but that is a job for later.
             while (enoughLettersInCommon == false)
             {
                 passwords = PasswordGenerator.GeneratePasswords(howManyPasswords, passwordLength);
@@ -93,15 +98,25 @@ namespace Fallout_Terminal.Model
             return passwords;
         }
 
+        /// <summary>
+        /// Determines whether there are enough letters in common between the passwords in the list.
+        /// This is needed to decrese the difficulty of the game, since if I just chose random passwords
+        /// from the dictionary file, we would likely end up with words that have little to no letters exactly in common,
+        /// making guessing the correct password from the number of letters in common with the player's incorrect
+        /// guesses much more difficult, if not impossible.
+        /// </summary>
+        /// <param name="passwords">The list of passwords to check.</param>
+        /// <param name="howManyLetters">The number of letters that must be in common among the passwords.</param>
+        /// <returns></returns>
         private bool EnoughLettersInCommon(List<string> passwords, int howManyLetters)
         {
+            // TODO: Can we make this less O(Bad)?
             int lettersInCommon = 0;
-            // HERE BE DRAGONS!!!
             // For each password in the list of passwords...
-            for(int passwordToCompareTo = 0; passwordToCompareTo < passwords.Count; passwordToCompareTo++)
+            for (int passwordToCompareTo = 0; passwordToCompareTo < passwords.Count; passwordToCompareTo++)
             {
                 // We want to compare each character in this password...
-                for(int characterToCompareTo = 0; characterToCompareTo < passwords[0].Length; characterToCompareTo++)
+                for (int characterToCompareTo = 0; characterToCompareTo < passwords[0].Length; characterToCompareTo++)
                 {
                     // Against every other password...
                     for (int password = passwordToCompareTo; password < passwords.Count; password++)
@@ -110,10 +125,10 @@ namespace Fallout_Terminal.Model
                         for (int character = 0; character < passwords[0].Length; character++)
                         {
                             // If the password to look at is not the same is the password we are comparing against...
-                            if((password == passwordToCompareTo) == false)
+                            if ((password == passwordToCompareTo) == false)
                             {
                                 // If the characters are equal...
-                                if(passwords[passwordToCompareTo][characterToCompareTo] 
+                                if (passwords[passwordToCompareTo][characterToCompareTo]
                                     == passwords[password][character])
                                 {
                                     lettersInCommon++;
@@ -123,14 +138,7 @@ namespace Fallout_Terminal.Model
                     }
                 }
             }
-            if(lettersInCommon >= howManyLetters)
-            {
-                return true;
-            }
-            else
-            {
-                return false;
-            }
+            return (lettersInCommon >= howManyLetters) ? true : false;
         }
     }
 }
