@@ -5,8 +5,8 @@ using System.Linq;
 namespace Fallout_Terminal.Model
 {
     /// <summary>
-    /// This class will read a list of potential passwords from a file, and 
-    /// will handle supplying the game with a list of passwords to use in gameplay as choices.
+    /// This class reads a list of potential passwords from a file, and 
+    /// supplies a list of passwords potential passwords to use for the game.
     /// </summary>
     public class PasswordGenerator
     {
@@ -14,6 +14,9 @@ namespace Fallout_Terminal.Model
         const string DEFAULT_WORDLIST_PATH = @"..\..\Resources\Misc\words.txt";
         Random random = RandomProvider.GetThreadRandom();
 
+        /// <summary>
+        /// Does nothing other than instantiate the generator and read the wordlist in from a file.
+        /// </summary>
         public PasswordGenerator()
         {
             this.wordsFromFile = ReadAllWordsFromFile();
@@ -23,17 +26,20 @@ namespace Fallout_Terminal.Model
         /// Gets all of the words from the words.txt file by default, or from another file 
         /// if a path to the file is passed as a parameter.
         /// </summary>
-        /// <returns>A list of strings representing each word in the file at the passed (or default) 
-        /// path.</returns>
+        /// <returns>
+        /// A list of strings representing each word in the file at the passed (or default) 
+        /// path.
+        /// </returns>
         private List<string> ReadAllWordsFromFile(string path = DEFAULT_WORDLIST_PATH)
         {
             List<string> allWordsFromFile;
-            allWordsFromFile = System.IO.File.ReadAllLines(DEFAULT_WORDLIST_PATH).ToList();
+            allWordsFromFile = System.IO.File.ReadAllLines(path).ToList();
             return allWordsFromFile;
         }
 
         /// <summary>
-        /// Generates the list of potential passwords that will be used in the game.
+        /// Generates the list of potential passwords that will be used in the game 
+        /// from the list of words read in from the words file.
         /// </summary>
         /// <param name="numberToGenerate">The number of potential passwords to generate.</param>
         /// <param name="desiredLength">The desired length of each password.</param>
@@ -57,11 +63,10 @@ namespace Fallout_Terminal.Model
         }
 
         /// <summary>
-        /// Returns a list of words of the passed length contained within the 
+        /// Returns a list of all words of the provided length contained within the 
         /// list of words read in from the words file.
         /// </summary>
         /// <param name="length">The length of words to return.</param>
-        /// <returns>A list of words of the desired length.</returns>
         private List<string> GetWordsOfLength(int length)
         {
             List<string> wordsOfCorrectLength = new List<string>();

@@ -8,36 +8,33 @@ namespace Fallout_Terminal.Model
 {
     public class MemoryDump
     {
-        Random random = new Random();
-
-        // Number of Columns * Width of Columns * Number of Rows.
+        // This is the Number of Columns * Width of Columns * Number of Rows.
         private const int LENGTH = 384;
 
+        // TODO Should replace this with a RandomProvider based rng.
+        Random random = new Random();
+
         private GarbageCharacterGenerator GarbageCharacterGenerator;
-        //private PasswordManager PasswordManager;
         private List<string> passwords;
 
-        //private string contents = "";
         public string Contents { get; private set; }
 
         public MemoryDump(List<string> passwords)
         {
             Contents = "";
             GarbageCharacterGenerator = new GarbageCharacterGenerator();
-            //PasswordManager PasswordManager = new PasswordManager();
             this.passwords = passwords;
             PopulateContentsWithGarbageCharacters();
-            Console.WriteLine(Contents);    // TESTING
             PopulateContentsWithPasswords();
-
-            // TESTING ONLY:
-            Console.WriteLine("");
-            Console.WriteLine("");
-            Console.WriteLine("Contents:");
-            Console.WriteLine(Contents);
-            Console.WriteLine("");
+            Console.WriteLine(Contents); // TESTING ONLY
         }
-
+        
+        /// <summary>
+        /// Fills the memory dump contents with 'garbage-characters' like the ones used in Fallout.
+        /// Fetches random garbage characters from the GarbageCharacterGenerator class instance within this class instance.
+        /// Important: This method APPENDS the characters to the memory dump, so it is critical that the dump be empty when called.
+        /// This method should be called when initializing the memory dump.
+        /// </summary>
         private void PopulateContentsWithGarbageCharacters()
         {
             for(int index = 0; index < LENGTH; index++)
@@ -46,8 +43,19 @@ namespace Fallout_Terminal.Model
             }
         }
 
+        /// <summary>
+        /// Fills the contents of the memory dump with generated game passwords. 
+        /// Ensures that there is room to insert each password.
+        /// 
+        /// Uses random numbers to determine where to attempt insertion of each password.
+        /// Note: If the total length of characters in all of the passwords becomes too long, this method can
+        /// cause serious performance problems due to the difficulty in finding room for each of the passwords
+        /// by using random attempts. If the total length of all of the passwords exceeds the length of the memory dump,
+        /// you will have a problem.
+        /// </summary>
         private void PopulateContentsWithPasswords()
         {
+            // TODO: Fix to ensure that each position is only attempted once.
             for (int index = 0; index < passwords.Count; index++)
             {
                 int position = 0;
@@ -71,16 +79,22 @@ namespace Fallout_Terminal.Model
             }
         }
 
+        /// <summary>
+        /// Returns true when there is room to insert a game password into the memory dump at the given location, false if not.
+        /// Assumes all passwords are the same length, and gets this length from the list from fields within the class.
+        /// </summary>
+        /// <param name="position">The proposed insertion position of the password.</param>
         private bool IsRoomForPassword(int position)
         {
             for (int i = 0; i < passwords[0].Length; i++)
             {
+                // Will the end of the password would run over the length of the string?
                 if ((position + i) >= LENGTH)
                 {
-                    // If true, the end of the password would run over the length of the string. No room!
                     return false;
                 }
             }
+            // Is there another password immediately to the right?
             if ((position + (passwords[0].Length) + 1 <= LENGTH))
             {
                 if (IsLetter(Contents[position + passwords[0].Length + 1]))
@@ -88,6 +102,7 @@ namespace Fallout_Terminal.Model
                     return false;
                 }
             }
+            // Is there another password immediately to the left?
             if ((position != 0) && (IsLetter(Contents[position - 1])))
             {
                 return false;
@@ -96,19 +111,16 @@ namespace Fallout_Terminal.Model
             return true;
         }
 
+        /// <summary>
+        /// Returns true if the given character is a letter a-z, false if not. Case insensitive.
+        /// </summary>
+        /// <param name="character">The character to test.</param>
         private bool IsLetter(char character)
         {
             character = Char.ToLower(character);
             char[] letters = {'a','b','c','d','e','f','g','h','i','j','k','l','m'
                     ,'n','o','p','q','r','s','t','u','v','w','x','y','z'};
-            if(letters.Contains(character))
-            {
-                return true;
-            }
-            else
-            {
-                return false;
-            }
+            return letters.Contains(character) ? true : false;
         }
     }
 }
