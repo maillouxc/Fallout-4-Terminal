@@ -11,7 +11,7 @@ namespace Fallout_Terminal.Model
     /// </summary>
     public class HexList
     {
-        private const int NUMBER_OF_VALUES_NEEDED = 44;
+        private const int NUMBER_OF_VALUES_NEEDED = 32; // 2 columns of 16
         private const int INCREMENT_VALUE = 12;
         private const int MIN_START_VALUE = 0;
         private const int MAX_END_VALUE = 65535 - (NUMBER_OF_VALUES_NEEDED * INCREMENT_VALUE);
