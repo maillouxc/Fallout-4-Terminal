@@ -60,13 +60,10 @@
       <SubType>Designer</SubType>
     </Page>
     <Compile Include="Model\HexList.cs" />
-    <Compile Include="Model\InputCharGrid.cs" />
     <Compile Include="Model\MemoryDump.cs" />
     <Compile Include="Model\PasswordGenerator.cs" />
-    <Compile Include="Model\MainCharGrid.cs" />
     <Compile Include="Model\GarbageCharacterGenerator.cs" />
     <Compile Include="Model\PasswordManager.cs" />
-    <Compile Include="Model\CharGrid.cs" />
     <Compile Include="Model\RandomProvider.cs" />
     <Compile Include="Model\TerminalModel.cs" />
     <Compile Include="ViewModel\TerminalViewModel.cs" />
