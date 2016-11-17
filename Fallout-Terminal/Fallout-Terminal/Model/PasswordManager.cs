@@ -32,6 +32,11 @@ namespace Fallout_Terminal.Model
             PasswordGenerator = new PasswordGenerator();
             PotentialPasswords = PasswordGenerator.GeneratePasswords(NumberOfPasswordsToGenerate, PasswordLength);
             ChooseACorrectPassword();
+            // Convert passwords to uppercase:
+            for (int password = 0; password < PotentialPasswords.Count; password++)
+            {
+                PotentialPasswords[password] = PotentialPasswords[password].ToUpper();
+            }
             Console.WriteLine("Correct Password: " + CorrectPassword); // TESTING
         }
 

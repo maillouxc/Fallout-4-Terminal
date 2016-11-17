@@ -38,9 +38,8 @@ namespace Fallout_Terminal
         /// <param name="e"></param>
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            // TESTING: DO NOT USE IN PRODUCTION CODE
-
             // Test some stuff todo with character selection.
+            /*
             LeftPasswordColumn.Focus();
             LeftPasswordColumn.Document.Blocks.Clear();
             LeftPasswordColumn.Document.Blocks.Add(new Paragraph(new Run("GJFJGJHUTIYLGJFJGJHUTIYLGJFJGJHUTIYLGJFJGJHUTIYLGJFJGJHUTIYLGJFJGJHUTIYLGJFJGJHUTIYLGJFJGJHUTIYLGJFJGJHUTIYLGJFJGJHUTIYLGJFJGJHUTIYLGJFJGJHUTIYLGJFJGJHUTIYLGJFJGJHUTIYLGJFJGJHUTIYLGJFJGJHUTIYL")));
@@ -60,11 +59,13 @@ namespace Fallout_Terminal
             end2 = end2.GetPositionAtOffset(-3);
             RightPasswordColumn.Selection.Select(start2, end2);
             RightPasswordColumn.IsInactiveSelectionHighlightEnabled = true;
+            */
         }
 
         private void powerButton_Click(object sender, RoutedEventArgs e)
         {
-            //TODO Add Logic for Power Button.
+            //TODO: Think about this some more. Is this the right way to do this?
+            viewModel.InitializeCharacters();
         }
 
         private void TerminalScreen_TextChanged(object sender, TextChangedEventArgs e)

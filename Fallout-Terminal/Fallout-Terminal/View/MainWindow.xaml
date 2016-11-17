@@ -170,6 +170,9 @@
                        IsReadOnly="True"
                        >
                 <FlowDocument>
+                    <Paragraph>
+                        <Run Text="{Binding LeftMemoryDumpCurrentlyDisplayed, Mode=OneWay}"></Run>
+                    </Paragraph>
                 </FlowDocument>
             </RichTextBox>
             <RichTextBox Name="RightPasswordColumn"
@@ -191,6 +194,9 @@
                        IsEnabled="True"
                        IsReadOnly="True">
                 <FlowDocument>
+                    <Paragraph>
+                        <Run Text="{Binding RightMemoryDumpCurrentlyDisplayed, Mode=OneWay}"></Run>
+                    </Paragraph>
                 </FlowDocument>
             </RichTextBox>
             <TextBlock Name="InputColumn"
@@ -205,25 +211,9 @@
                        FontFamily="Lucida Console"
                        FontSize="16px"
                        Margin="5,10,5,5" 
-                       LineHeight="12">
-                <!-- Temporary text addition. -->
-                >INIT LOCKOUT<LineBreak/>
-                <!-- //////////////////////// -->
+                       LineHeight="12"
+                       Text="{Binding InputColumnCurrentlyDisplayed}">
             </TextBlock>
         </Grid>
-
-
-
-        <!--
-        <RichTextBox x:Name="TerminalScreen" Grid.Column="1" HorizontalAlignment="Center" Margin="10" Grid.Row="1" VerticalAlignment="Center" BorderThickness="5" Cursor="None" Width="442" Height="380" FontFamily="Lucida Console" FontSize="14" AcceptsReturn="False" AutoWordSelection="False" IsReadOnly="True" IsUndoEnabled="False" Foreground="#FF5AC500" SelectionBrush="#FF15C104" BorderBrush="#FF000104" TextChanged="TerminalScreen_TextChanged" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" UndoLimit="0">
-            <RichTextBox.Background>
-                <ImageBrush ImageSource="../Resources/Images/TerminalScreenBackground.png" Stretch="None"/>
-            </RichTextBox.Background>
-            <FlowDocument x:Name="screenText" Cursor="None" IsColumnWidthFlexible="False" TextAlignment="Justify">
-                <Paragraph>
-                </Paragraph>
-            </FlowDocument>
-        </RichTextBox>
-        -->
     </Grid>
 </Window>
