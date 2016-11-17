@@ -8,8 +8,10 @@ namespace Fallout_Terminal.Model
 {
     public class MemoryDump
     {
-        // This is the Number of Columns * Width of Columns * Number of Rows.
-        private const int LENGTH = 384;
+        public const int LINE_LENGTH = 12;
+        public const int NUMBER_OF_LINES = 16;
+
+        private const int LENGTH = LINE_LENGTH * NUMBER_OF_LINES * 2; // 2 columns
 
         // TODO Should replace this with a RandomProvider based rng.
         Random random = new Random();
