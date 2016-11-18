@@ -66,6 +66,7 @@
     <Compile Include="Model\PasswordManager.cs" />
     <Compile Include="Model\RandomProvider.cs" />
     <Compile Include="Model\TerminalModel.cs" />
+    <Compile Include="Sound\SoundManager.cs" />
     <Compile Include="ViewModel\TerminalViewModel.cs" />
     <Compile Include="View\App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
@@ -104,7 +105,6 @@
     <None Include="Resources\Sounds\correctPassword.ogg" />
     <None Include="Resources\Sounds\enterKey.ogg" />
     <None Include="Resources\Sounds\powerOff.ogg" />
-    <None Include="Resources\Sounds\powerOn.ogg" />
     <None Include="Resources\Sounds\typing1.ogg" />
     <None Include="Resources\Sounds\typing10.ogg" />
     <None Include="Resources\Sounds\typing11.ogg" />
@@ -124,7 +124,11 @@
   <ItemGroup>
     <Resource Include="Resources\Images\TerminalScreenBackground.png" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Content Include="Resources\Sounds\powerOn.wav">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
   <ItemGroup>
     <Resource Include="Resources\Misc\words.txt" />
   </ItemGroup>

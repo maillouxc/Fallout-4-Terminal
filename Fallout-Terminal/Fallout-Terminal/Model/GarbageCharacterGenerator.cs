@@ -7,9 +7,7 @@ namespace Fallout_Terminal.Model
     /// </summary>
     class GarbageCharacterGenerator
     {
-        // We need to check later whether this is sufficiently random, or whether we need to use
-        // the wrapper class that Jon Skeet suggested.
-        Random random = new Random();
+        private Random random = RandomProvider.GetThreadRandom();
 
         private static char[] garbageCharacters =
             {'!', '(', ')', '{', '}', '<', '>', '[', ']', '/', '\\', '|', '$',
@@ -19,7 +17,7 @@ namespace Fallout_Terminal.Model
         /// Returns a random garbage character.
         /// </summary>
         /// <returns>A random char which is one of the allowed garbage characters.</returns>
-        internal char GetGarbageCharacter()
+        public char GetGarbageCharacter()
         {
             return garbageCharacters[random.Next(0, garbageCharacters.Length)];
         }

@@ -13,13 +13,11 @@ namespace Fallout_Terminal.Model
 
         private const int LENGTH = LINE_LENGTH * NUMBER_OF_LINES * 2; // 2 columns
 
-        // TODO Should replace this with a RandomProvider based rng.
-        Random random = new Random();
+        public string Contents { get; private set; }
 
+        private Random random = RandomProvider.GetThreadRandom();
         private GarbageCharacterGenerator GarbageCharacterGenerator;
         private List<string> passwords;
-
-        public string Contents { get; private set; }
 
         public MemoryDump(List<string> passwords)
         {

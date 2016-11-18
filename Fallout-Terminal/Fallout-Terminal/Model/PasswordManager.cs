@@ -44,7 +44,7 @@ namespace Fallout_Terminal.Model
         /// Checks the input password to see if it is correct. If the password is correct, returns -1,
         /// else, returns the number of characters in common with the passwordToCheck argument provided.
         /// </summary>
-        internal int CheckPassword(string passwordToCheck)
+        public int CheckPassword(string passwordToCheck)
         {
             if(passwordToCheck == CorrectPassword)
             {
@@ -91,7 +91,7 @@ namespace Fallout_Terminal.Model
         /// This is O(scary), especially if the RNG is unkind, but we will see if it is problem or not through testing.
         /// Working programs come first, after all! Optimization second!
         /// There is almost certainly a better way to do this, but that is a job for later.
-        internal List<string> GetPasswordsWithEnoughLettersInCommon(int howManyPasswords, int passwordLength, int howManyInCommon)
+        private List<string> GetPasswordsWithEnoughLettersInCommon(int howManyPasswords, int passwordLength, int howManyInCommon)
         {
             bool enoughLettersInCommon = false;
             List<string> passwords = new List<string>();

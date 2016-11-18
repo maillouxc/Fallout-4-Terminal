@@ -97,6 +97,9 @@ namespace Fallout_Terminal.ViewModel
             }
         }
 
+        /// <summary>
+        /// Triggers the initialization of all of the body text elements, one at a time.
+        /// </summary>
         async public Task InitializeBodyText()
         {
             for (int line = 0; line < NUMBER_OF_LINES; line++)
@@ -189,6 +192,11 @@ namespace Fallout_Terminal.ViewModel
             }
         }
 
+        /// <summary>
+        /// Initializes the input column on the right of the screen.
+        /// This column only has one character.
+        /// </summary>
+        /// <returns></returns>
         async private Task InitializeInputColumn()
         {
             await Task.Delay(DELAY_TIME);

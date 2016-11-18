@@ -11,15 +11,16 @@ namespace Fallout_Terminal.Model
     /// </summary>
     public class HexList
     {
+        public List<string> Values { get; private set; }
+
         private const int NUMBER_OF_VALUES_NEEDED = 32; // 2 columns of 16
         private const int INCREMENT_VALUE = 12;
         private const int MIN_START_VALUE = 0;
         // TODO: Check overflow conditions.
         private const int MAX_END_VALUE = 65535 - (NUMBER_OF_VALUES_NEEDED * INCREMENT_VALUE);
-
         private Random rng = RandomProvider.GetThreadRandom();
 
-        public List<string> Values { get; private set; }
+        
 
         /// <summary>
         /// When this constructor is called, it initializes the class by choosing a start number
