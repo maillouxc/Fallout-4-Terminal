@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Media;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Media;
@@ -10,14 +9,14 @@ namespace Fallout_Terminal.Sound
 {
     class SoundManager
     {
-        private SoundPlayer SoundPlayer;
+        private MediaPlayer MediaPlayer;
 
         /// <summary>
         /// Basic constructor that initializes the MediaPlayer.
         /// </summary>
         public SoundManager()
         {
-            SoundPlayer = new SoundPlayer();
+            MediaPlayer = new MediaPlayer();
         }
 
         /// <summary>
@@ -27,9 +26,9 @@ namespace Fallout_Terminal.Sound
         public void PlaySound(string filePath)
         {
             Uri uri = new Uri(filePath, UriKind.Relative);
-            SoundPlayer.SoundLocation = filePath;
-            SoundPlayer.LoadAsync();
-            SoundPlayer.Play();
+            MediaPlayer.Open(uri);
+            MediaPlayer.Volume = 100;
+            MediaPlayer.Play();
         }
     }
 }
