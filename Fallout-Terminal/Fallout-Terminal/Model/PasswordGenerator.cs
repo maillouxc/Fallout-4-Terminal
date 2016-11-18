@@ -11,8 +11,8 @@ namespace Fallout_Terminal.Model
     public class PasswordGenerator
     {
         private List<string> wordsFromFile;
-        const string DEFAULT_WORDLIST_PATH = @"..\..\Resources\Misc\words.txt";
-        Random random = RandomProvider.GetThreadRandom();
+        private const string DEFAULT_WORDLIST_PATH = @"..\..\Resources\Misc\words.txt";
+        private Random random = RandomProvider.GetThreadRandom();
 
         /// <summary>
         /// Does nothing other than instantiate the generator and read the wordlist in from a file.
@@ -20,6 +20,31 @@ namespace Fallout_Terminal.Model
         public PasswordGenerator()
         {
             this.wordsFromFile = ReadAllWordsFromFile();
+        }
+
+        /// <summary>
+        /// Generates the list of potential passwords that will be used in the game 
+        /// from the list of words read in from the words file.
+        /// </summary>
+        /// <param name="numberToGenerate">The number of potential passwords to generate.</param>
+        /// <param name="desiredLength">The desired length of each password.</param>
+        /// <returns>The list of potential passwords that will be used in the game.</returns>
+        public List<string> GeneratePasswords(int numberToGenerate, int desiredLength)
+        {
+            // TODO: Optimize memory usage of dictionary.
+            List<string> potentialPasswords = new List<string>();
+            List<string> wordsOfCorrectLength = GetWordsOfLength(desiredLength);
+            for (int i = 0; i < numberToGenerate; i++)
+            {
+                // TODO: Modify method to generate passwords with more letters in common to make the game easier.
+                potentialPasswords.Add(
+                    wordsOfCorrectLength.ElementAt(
+                        random.Next(0, wordsOfCorrectLength.Count)
+                        )
+                    );
+                // TODO: Fix potential (although extremely unlikely) possiblilty of two of the same words being pulled.
+            }
+            return potentialPasswords;
         }
 
         /// <summary>
@@ -35,31 +60,6 @@ namespace Fallout_Terminal.Model
             List<string> allWordsFromFile;
             allWordsFromFile = System.IO.File.ReadAllLines(path).ToList();
             return allWordsFromFile;
-        }
-
-        /// <summary>
-        /// Generates the list of potential passwords that will be used in the game 
-        /// from the list of words read in from the words file.
-        /// </summary>
-        /// <param name="numberToGenerate">The number of potential passwords to generate.</param>
-        /// <param name="desiredLength">The desired length of each password.</param>
-        /// <returns>The list of potential passwords that will be used in the game.</returns>
-        public List<string> GeneratePasswords(int numberToGenerate, int desiredLength)
-        {
-            // TODO: Optimize memory usage of dictionary.
-            List<string> potentialPasswords = new List<string>();
-            List<string> wordsOfCorrectLength = GetWordsOfLength(desiredLength);
-            for(int i = 0; i < numberToGenerate; i++)
-            {
-                // TODO: Modify method to generate passwords with more letters in common to make the game easier.
-                potentialPasswords.Add(
-                    wordsOfCorrectLength.ElementAt(
-                        random.Next(0, wordsOfCorrectLength.Count)
-                        )
-                    );
-                // TODO: Fix potential (although extremely unlikely) possiblilty of two of the same words being pulled.
-            }
-            return potentialPasswords;
         }
 
         /// <summary>

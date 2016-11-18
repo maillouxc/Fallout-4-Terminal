@@ -6,6 +6,8 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Documents;
 using System.Windows.Input;
+using Fallout_Terminal.ViewModel;
+using Fallout_Terminal.Sound;
 
 namespace Fallout_Terminal
 {
@@ -14,7 +16,8 @@ namespace Fallout_Terminal
     /// </summary>
     public partial class MainWindow : Window
     {
-        ViewModel.TerminalViewModel viewModel;
+        TerminalViewModel ViewModel;
+        SoundManager SoundManager;
 
         /// <summary>
         /// Creates an instance of the main window for the application, 
@@ -27,7 +30,8 @@ namespace Fallout_Terminal
             // It's best to wait until stuff is fully loaded before manipulating it.
             // Not doing so can cause some obscure bugs.
             Loaded += Window_Loaded;
-            viewModel = FindResource("viewModel") as ViewModel.TerminalViewModel;          
+            ViewModel = FindResource("ViewModel") as ViewModel.TerminalViewModel;
+            SoundManager = new SoundManager();       
         }
 
         /// <summary>
@@ -64,8 +68,18 @@ namespace Fallout_Terminal
 
         private void powerButton_Click(object sender, RoutedEventArgs e)
         {
-            //TODO: Think about this some more. Is this the right way to do this?
-            viewModel.InitializeCharacters();
+            if(ViewModel.PowerIsOn)
+            {
+                SoundManager.PlaySound(@"..\..\Resources\Sounds\powerOff.wav");
+                ViewModel.PowerOff();
+            }
+            else
+            {
+                ViewModel.PowerOn();
+                SoundManager.PlaySound(@"..\..\Resources\Sounds\powerOn.wav");
+                //TODO: Think about this some more. Is this the right way to do this?
+            }
+
         }
 
         private void TerminalScreen_TextChanged(object sender, TextChangedEventArgs e)

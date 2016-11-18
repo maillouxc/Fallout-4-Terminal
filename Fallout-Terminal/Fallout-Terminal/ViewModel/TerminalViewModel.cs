@@ -26,13 +26,67 @@ namespace Fallout_Terminal.ViewModel
         public String LeftMemoryDumpCurrentlyDisplayed { get; private set; }
         public String RightMemoryDumpCurrentlyDisplayed { get; private set; }
         public String InputColumnCurrentlyDisplayed { get; private set; }
+        public bool PowerIsOn { get; private set; }
+
+        public event PropertyChangedEventHandler PropertyChanged;
 
         private const String ROBCO_TEXT = "Welcome to ROBCO Industries (TM) Termlink " + "\u000D" + "\u000A" + "Password Required";
         private const String DEFAULT_ATTEMPTS_TEXT = "Attempts Remaining: \u25AE \u25AE \u25AE \u25AE";
         private const int NUMBER_OF_LINES = 16; // The number of lines of body text.
-        private const int DELAY_TIME = 20; // Milliseconds.
+        private const int DELAY_TIME = 2; // Milliseconds.
 
-        public event PropertyChangedEventHandler PropertyChanged;
+        private TerminalModel TerminalModel;
+        private bool ScreenIsReady = false;
+
+        /// <summary>
+        /// Creates an instance of the TerminalModel class, and intializes the character display on the screen for the game.
+        /// </summary>
+        public TerminalViewModel()
+        {
+            PowerIsOn = false;
+        }
+
+        /// <summary>
+        /// Powers on the terminal and initialzes the game and the screen.
+        /// </summary>
+        public async void PowerOn()
+        {
+            ScreenIsReady = false;
+            PowerIsOn = true;
+            TerminalModel = new TerminalModel();
+            await InitializeScreen();
+            ScreenIsReady = true;
+        }
+
+        /// <summary>
+        /// Toggles the power on state of the terminal. When the terminal is off, the game ended. If turned on again, a new game will start.
+        /// </summary>
+        public void PowerOff()
+        {
+            if(!ScreenIsReady)
+            {
+                return;
+            }
+            PowerIsOn = false;
+            ClearScreen();
+            // Garbage Collect the Game State.
+            TerminalModel = null;
+        }
+
+
+
+        /// <summary>
+        /// Begins populating the screen with characters, one at a time.
+        /// We await the method calls within because we want them to be non-blocking, but also sequential (not simultaneous).
+        /// Returns true when finished.
+        /// </summary>
+        async private Task InitializeScreen()
+        {
+            await InitializeRobcoText();
+            await InitializeAttemptsText();
+            await InitializeBodyText();
+            await InitializeInputColumn();
+        }
 
         /// <summary>
         /// Call to notify the view bindings that the property provided has changed.
@@ -46,33 +100,11 @@ namespace Fallout_Terminal.ViewModel
             }
         }
 
-        private TerminalModel TerminalModel;
-
-        /// <summary>
-        /// Creates an instance of the TerminalModel class, and intializes the character display on the screen for the game.
-        /// </summary>
-        public TerminalViewModel()
-        {
-            TerminalModel = new TerminalModel();
-        }
-
-        /// <summary>
-        /// Begins populating the screen with characters, one at a time.
-        /// We await the method calls within because we want them to be non-blocking, but also sequential (not simultaneous).
-        /// </summary>
-        async public void InitializeCharacters()
-        {
-            await InitializeRobcoText();
-            await InitializeAttemptsText();
-            await InitializeBodyText();
-            await InitializeInputColumn();
-        }
-
         /// <summary>
         /// Initializes the robco text at the top of the game screen, character by character.
         /// </summary>
         /// <returns></returns>
-        async public Task InitializeRobcoText()
+        async private Task InitializeRobcoText()
         {
             // TODO: Fix screen contents shifting as new lines are created.
             foreach (char character in ROBCO_TEXT)
@@ -87,7 +119,7 @@ namespace Fallout_Terminal.ViewModel
         /// Initializes the attempts remaining text at the top of the screen character by character.
         /// </summary>
         /// <returns></returns>
-        async public Task InitializeAttemptsText()
+        async private Task InitializeAttemptsText()
         {
             foreach (char character in DEFAULT_ATTEMPTS_TEXT)
             {
@@ -97,7 +129,10 @@ namespace Fallout_Terminal.ViewModel
             }
         }
 
-        async public Task InitializeBodyText()
+        /// <summary>
+        /// Triggers the initialization of all of the body text elements, one at a time.
+        /// </summary>
+        async private Task InitializeBodyText()
         {
             for (int line = 0; line < NUMBER_OF_LINES; line++)
             {
@@ -189,10 +224,36 @@ namespace Fallout_Terminal.ViewModel
             }
         }
 
+        /// <summary>
+        /// Initializes the input column on the right of the screen.
+        /// This column only has one character.
+        /// </summary>
+        /// <returns></returns>
         async private Task InitializeInputColumn()
         {
             await Task.Delay(DELAY_TIME);
             InputColumnCurrentlyDisplayed += ">";
+            Notify("InputColumnCurrentlyDisplayed");
+        }
+
+        /// <summary>
+        /// Clears the screen of all text.
+        /// </summary>
+        private void ClearScreen()
+        {
+            RobcoTextCurrentlyDisplayed = null;
+            AttemptsTextCurrentlyDisplayed = null;
+            LeftHexCurrentlyDisplayed = null;
+            RightHexCurrentlyDisplayed = null;
+            LeftMemoryDumpCurrentlyDisplayed = null;
+            RightMemoryDumpCurrentlyDisplayed = null;
+            InputColumnCurrentlyDisplayed = null;
+            Notify("RobcoTextCurrentlyDisplayed");
+            Notify("AttemptsTextCurrentlyDisplayed");
+            Notify("LeftHexCurrentlyDisplayed");
+            Notify("RightHexCurrentlyDisplayed");
+            Notify("LeftMemoryDumpCurrentlyDisplayed");
+            Notify("RightMemoryDumpCurrentlyDisplayed");
             Notify("InputColumnCurrentlyDisplayed");
         }
     }
