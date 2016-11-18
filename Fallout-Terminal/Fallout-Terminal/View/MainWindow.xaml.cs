@@ -16,7 +16,7 @@ namespace Fallout_Terminal
     /// </summary>
     public partial class MainWindow : Window
     {
-        TerminalViewModel viewModel;
+        TerminalViewModel ViewModel;
         SoundManager SoundManager;
 
         /// <summary>
@@ -30,7 +30,7 @@ namespace Fallout_Terminal
             // It's best to wait until stuff is fully loaded before manipulating it.
             // Not doing so can cause some obscure bugs.
             Loaded += Window_Loaded;
-            viewModel = FindResource("viewModel") as ViewModel.TerminalViewModel;
+            ViewModel = FindResource("ViewModel") as ViewModel.TerminalViewModel;
             SoundManager = new SoundManager();       
         }
 
@@ -68,10 +68,18 @@ namespace Fallout_Terminal
 
         private void powerButton_Click(object sender, RoutedEventArgs e)
         {
-            // TODO: different sound on power on than power off.
-            SoundManager.PlaySound(@"..\..\Resources\Sounds\powerOn.wav");
-            //TODO: Think about this some more. Is this the right way to do this?
-            viewModel.InitializeCharacters();
+            if(ViewModel.PowerIsOn)
+            {
+                SoundManager.PlaySound(@"..\..\Resources\Sounds\powerOff.wav");
+                ViewModel.PowerOff();
+            }
+            else
+            {
+                ViewModel.PowerOn();
+                SoundManager.PlaySound(@"..\..\Resources\Sounds\powerOn.wav");
+                //TODO: Think about this some more. Is this the right way to do this?
+            }
+
         }
 
         private void TerminalScreen_TextChanged(object sender, TextChangedEventArgs e)

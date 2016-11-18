@@ -20,7 +20,7 @@
         Width="800" 
         Height="Auto">
     <Window.Resources>
-        <viewmodel:TerminalViewModel x:Key="viewModel"/>
+        <viewmodel:TerminalViewModel x:Key="ViewModel"/>
     </Window.Resources>
     
     <!-- This grid holds the grid for the screen, 
@@ -59,7 +59,7 @@
 
         <!-- Testing Layout options-->
         <Grid Name="TerminalScreen"
-              DataContext="{StaticResource ResourceKey=viewModel}"
+              DataContext="{StaticResource ResourceKey=ViewModel}"
               Grid.Column="1"
               Grid.Row="1"
               HorizontalAlignment="Center"

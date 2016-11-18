@@ -102,21 +102,6 @@
     <AppDesigner Include="Properties\" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\Sounds\correctPassword.ogg" />
-    <None Include="Resources\Sounds\enterKey.ogg" />
-    <None Include="Resources\Sounds\powerOff.ogg" />
-    <None Include="Resources\Sounds\typing1.ogg" />
-    <None Include="Resources\Sounds\typing10.ogg" />
-    <None Include="Resources\Sounds\typing11.ogg" />
-    <None Include="Resources\Sounds\typing2.ogg" />
-    <None Include="Resources\Sounds\typing3.ogg" />
-    <None Include="Resources\Sounds\typing4.ogg" />
-    <None Include="Resources\Sounds\typing5.ogg" />
-    <None Include="Resources\Sounds\typing6.ogg" />
-    <None Include="Resources\Sounds\typing7.ogg" />
-    <None Include="Resources\Sounds\typing8.ogg" />
-    <None Include="Resources\Sounds\typing9.ogg" />
-    <None Include="Resources\Sounds\wrongPassword.ogg" />
     <None Include="App.config">
       <SubType>Designer</SubType>
     </None>
@@ -125,9 +110,26 @@
     <Resource Include="Resources\Images\TerminalScreenBackground.png" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Resources\Sounds\correctPassword.wav" />
+    <Content Include="Resources\Sounds\enterKey.wav" />
+    <Content Include="Resources\Sounds\powerOff.wav">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="Resources\Sounds\powerOn.wav">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="Resources\Sounds\typing1.wav" />
+    <Content Include="Resources\Sounds\typing10.wav" />
+    <Content Include="Resources\Sounds\typing11.wav" />
+    <Content Include="Resources\Sounds\typing2.wav" />
+    <Content Include="Resources\Sounds\typing3.wav" />
+    <Content Include="Resources\Sounds\typing4.wav" />
+    <Content Include="Resources\Sounds\typing5.wav" />
+    <Content Include="Resources\Sounds\typing6.wav" />
+    <Content Include="Resources\Sounds\typing7.wav" />
+    <Content Include="Resources\Sounds\typing8.wav" />
+    <Content Include="Resources\Sounds\typing9.wav" />
+    <Content Include="Resources\Sounds\wrongPassword.wav" />
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Resources\Misc\words.txt" />
