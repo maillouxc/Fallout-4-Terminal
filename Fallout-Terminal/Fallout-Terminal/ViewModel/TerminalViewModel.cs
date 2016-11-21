@@ -5,41 +5,44 @@ using System.Text;
 using System.Threading.Tasks;
 using Fallout_Terminal.Model;
 using System.ComponentModel;
+using Fallout_Terminal.View;
 
 namespace Fallout_Terminal.ViewModel
 {
     public class TerminalViewModel : INotifyPropertyChanged
     {
-        public String RobcoTextCurrentlyDisplayed
+        public string RobcoTextCurrentlyDisplayed
         {
             get;
             private set;
         }
-        public String AttemptsTextCurrentlyDisplayed
+        public string AttemptsTextCurrentlyDisplayed
         {
             // TODO: Link in to an event somewhere in the model to stay updated on the number of attempts remaining.
             get;
             private set;
         }
-        public String LeftHexCurrentlyDisplayed { get; private set; }
-        public String RightHexCurrentlyDisplayed { get; private set; }
-        public String LeftMemoryDumpCurrentlyDisplayed { get; private set; }
-        public String RightMemoryDumpCurrentlyDisplayed { get; private set; }
-        public String InputColumnCurrentlyDisplayed { get; private set; }
+        public string LeftHexCurrentlyDisplayed { get; private set; }
+        public string RightHexCurrentlyDisplayed { get; private set; }
+        public string LeftMemoryDumpCurrentlyDisplayed { get; private set; }
+        public string RightMemoryDumpCurrentlyDisplayed { get; private set; }
+        public string InputColumnCurrentlyDisplayed { get; private set; }
         public bool PowerIsOn { get; private set; }
 
         public event PropertyChangedEventHandler PropertyChanged;
 
-        private const String ROBCO_TEXT = "Welcome to ROBCO Industries (TM) Termlink " + "\u000D" + "\u000A" + "Password Required";
-        private const String DEFAULT_ATTEMPTS_TEXT = "Attempts Remaining: \u25AE \u25AE \u25AE \u25AE";
-        private const int NUMBER_OF_LINES = 16; // The number of lines of body text.
-        private const int DELAY_TIME = 2; // Milliseconds.
+        public const int NUMBER_OF_LINES = 16; // The number of lines of body text.
+        public const int NUMBER_OF_COLUMNS = 12;
+
+        private const string ROBCO_TEXT = "Welcome to ROBCO Industries (TM) Termlink " + "\u000D" + "\u000A" + "Password Required";
+        private const string DEFAULT_ATTEMPTS_TEXT = "Attempts Remaining: \u25AE \u25AE \u25AE \u25AE";
+        private const int DELAY_TIME = 0; // Milliseconds.
 
         private TerminalModel TerminalModel;
         private bool ScreenIsReady = false;
 
         /// <summary>
-        /// Creates an instance of the TerminalModel class, and intializes the character display on the screen for the game.
+        /// Creates an instance of the TerminalModel class.
         /// </summary>
         public TerminalViewModel()
         {
@@ -63,29 +66,15 @@ namespace Fallout_Terminal.ViewModel
         /// </summary>
         public void PowerOff()
         {
+            // TODO: Implement Power off while booting.
             if(!ScreenIsReady)
             {
                 return;
             }
             PowerIsOn = false;
             ClearScreen();
-            // Garbage Collect the Game State.
+            // Garbage collect the game state.
             TerminalModel = null;
-        }
-
-
-
-        /// <summary>
-        /// Begins populating the screen with characters, one at a time.
-        /// We await the method calls within because we want them to be non-blocking, but also sequential (not simultaneous).
-        /// Returns true when finished.
-        /// </summary>
-        async private Task InitializeScreen()
-        {
-            await InitializeRobcoText();
-            await InitializeAttemptsText();
-            await InitializeBodyText();
-            await InitializeInputColumn();
         }
 
         /// <summary>
@@ -98,6 +87,19 @@ namespace Fallout_Terminal.ViewModel
             {
                 PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
             }
+        }
+
+        /// <summary>
+        /// Begins populating the screen with characters, one at a time.
+        /// We await the method calls within because we want them to be non-blocking, but also sequential (not simultaneous).
+        /// Returns true when finished.
+        /// </summary>
+        async private Task InitializeScreen()
+        {
+            await InitializeRobcoText();
+            await InitializeAttemptsText();
+            await InitializeBodyText();
+            await InitializeInputColumn();
         }
 
         /// <summary>
@@ -214,11 +216,11 @@ namespace Fallout_Terminal.ViewModel
                     // We need to add a new line after the last character in each line.
                     if (isLeftColumn)
                     {
-                        LeftMemoryDumpCurrentlyDisplayed += ("\u000D" + "\u000A");
+                        LeftMemoryDumpCurrentlyDisplayed += ('\n');
                     }
                     else
                     {
-                        RightMemoryDumpCurrentlyDisplayed += ("\u000D" + "\u000A");
+                        RightMemoryDumpCurrentlyDisplayed += ('\n');
                     }
                 }
             }
@@ -255,6 +257,14 @@ namespace Fallout_Terminal.ViewModel
             Notify("LeftMemoryDumpCurrentlyDisplayed");
             Notify("RightMemoryDumpCurrentlyDisplayed");
             Notify("InputColumnCurrentlyDisplayed");
+        }
+
+        /// <summary>
+        /// Submits the entry passed to it for checking, whether that be a password or something else.
+        /// </summary>
+        public void Submit(string input)
+        {
+            // TODO: Add functionality.
         }
     }
 }

@@ -8,6 +8,7 @@ using System.Windows.Documents;
 using System.Windows.Input;
 using Fallout_Terminal.ViewModel;
 using Fallout_Terminal.Sound;
+using Fallout_Terminal.View;
 
 namespace Fallout_Terminal
 {
@@ -16,8 +17,10 @@ namespace Fallout_Terminal
     /// </summary>
     public partial class MainWindow : Window
     {
-        TerminalViewModel ViewModel;
-        SoundManager SoundManager;
+        public TerminalViewModel ViewModel;
+
+        private SoundManager SoundManager;
+        private SelectionManager SelectionManager;
 
         /// <summary>
         /// Creates an instance of the main window for the application, 
@@ -29,41 +32,11 @@ namespace Fallout_Terminal
             InitializeComponent();
             // It's best to wait until stuff is fully loaded before manipulating it.
             // Not doing so can cause some obscure bugs.
-            Loaded += Window_Loaded;
-            ViewModel = FindResource("ViewModel") as ViewModel.TerminalViewModel;
-            SoundManager = new SoundManager();       
-        }
-
-        /// <summary>
-        /// A method filled with various things to execute once the window is fully loaded. Fixes that pesky focus bug.
-        /// This method should NOT be left like this in the final program. Most of the stuff in here is for testing purposes.
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void Window_Loaded(object sender, RoutedEventArgs e)
-        {
-            // Test some stuff todo with character selection.
-            /*
-            LeftPasswordColumn.Focus();
-            LeftPasswordColumn.Document.Blocks.Clear();
-            LeftPasswordColumn.Document.Blocks.Add(new Paragraph(new Run("GJFJGJHUTIYLGJFJGJHUTIYLGJFJGJHUTIYLGJFJGJHUTIYLGJFJGJHUTIYLGJFJGJHUTIYLGJFJGJHUTIYLGJFJGJHUTIYLGJFJGJHUTIYLGJFJGJHUTIYLGJFJGJHUTIYLGJFJGJHUTIYLGJFJGJHUTIYLGJFJGJHUTIYLGJFJGJHUTIYLGJFJGJHUTIYL")));
-            TextPointer start = LeftPasswordColumn.Document.ContentStart;
-            start = start.GetPositionAtOffset(3);
-            TextPointer end = LeftPasswordColumn.Document.ContentEnd;
-            end = end.GetPositionAtOffset(-3);
-            LeftPasswordColumn.Selection.Select(start, end);
-            LeftPasswordColumn.IsInactiveSelectionHighlightEnabled = true;
-
-            RightPasswordColumn.Focus();
-            RightPasswordColumn.Document.Blocks.Clear();
-            RightPasswordColumn.Document.Blocks.Add(new Paragraph(new Run("GJFJGJHUTIYLGJFJGJHUTIYLGJFJGJHUTIYLGJFJGJHUTIYLGJFJGJHUTIYLGJFJGJHUTIYLGJFJGJHUTIYLGJFJGJHUTIYLGJFJGJHUTIYLGJFJGJHUTIYLGJFJGJHUTIYLGJFJGJHUTIYLGJFJGJHUTIYLGJFJGJHUTIYLGJFJGJHUTIYLGJFJGJHUTIYL")));
-            TextPointer start2 = RightPasswordColumn.Document.ContentStart;
-            start2 = start2.GetPositionAtOffset(3);
-            TextPointer end2 = RightPasswordColumn.Document.ContentEnd;
-            end2 = end2.GetPositionAtOffset(-3);
-            RightPasswordColumn.Selection.Select(start2, end2);
-            RightPasswordColumn.IsInactiveSelectionHighlightEnabled = true;
-            */
+            ViewModel = FindResource("ViewModel") as TerminalViewModel;
+            SoundManager = new SoundManager();
+            SelectionManager = new View.SelectionManager(this);
+            LeftPasswordColumn.PreviewKeyDown += new KeyEventHandler(SelectionManager.OnKeyDown);
+            RightPasswordColumn.PreviewKeyDown += new KeyEventHandler(SelectionManager.OnKeyDown);
         }
 
         private void powerButton_Click(object sender, RoutedEventArgs e)

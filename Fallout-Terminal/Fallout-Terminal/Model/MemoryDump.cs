@@ -97,30 +97,18 @@ namespace Fallout_Terminal.Model
             // Is there another password immediately to the right?
             if ((position + (passwords[0].Length) + 1 <= LENGTH))
             {
-                if (IsLetter(Contents[position + passwords[0].Length + 1]))
+                if (Char.IsLetter(Contents[position + passwords[0].Length + 1]))
                 {
                     return false;
                 }
             }
             // Is there another password immediately to the left?
-            if ((position != 0) && (IsLetter(Contents[position - 1])))
+            if ((position != 0) && (Char.IsLetter(Contents[position - 1])))
             {
                 return false;
             }
             // If we got here, there is room.
             return true;
-        }
-
-        /// <summary>
-        /// Returns true if the given character is a letter a-z, false if not. Case insensitive.
-        /// </summary>
-        /// <param name="character">The character to test.</param>
-        private bool IsLetter(char character)
-        {
-            character = Char.ToLower(character);
-            char[] letters = {'a','b','c','d','e','f','g','h','i','j','k','l','m'
-                    ,'n','o','p','q','r','s','t','u','v','w','x','y','z'};
-            return letters.Contains(character) ? true : false;
         }
     }
 }

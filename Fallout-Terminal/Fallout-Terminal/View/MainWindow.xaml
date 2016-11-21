@@ -18,14 +18,19 @@
         ScrollViewer.VerticalScrollBarVisibility="Disabled" 
         UseLayoutRounding="False" 
         Width="800" 
-        Height="Auto">
+        Height="Auto"
+        IsTabStop="False">
     <Window.Resources>
         <viewmodel:TerminalViewModel x:Key="ViewModel"/>
     </Window.Resources>
     
     <!-- This grid holds the grid for the screen, 
     as well as the power button.-->
-    <Grid x:Name="grid" HorizontalAlignment="Center" VerticalAlignment="Center" ScrollViewer.VerticalScrollBarVisibility="Disabled">
+    <Grid x:Name="grid" 
+          HorizontalAlignment="Center" 
+          VerticalAlignment="Center" 
+          ScrollViewer.VerticalScrollBarVisibility="Disabled"
+          >
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="80px"/>
             <ColumnDefinition Width="Auto"/>
@@ -55,6 +60,7 @@
                 FontFamily="Segoe UI Black" 
                 FontSize="16" 
                 Padding="0"
+                IsTabStop="False"
          />
 
         <!-- Testing Layout options-->
@@ -168,6 +174,7 @@
                        SelectionBrush="#FF0D8B00"
                        IsEnabled="True"
                        IsReadOnly="True"
+                       IsTabStop="False" AutoWordSelection="False" IsUndoEnabled="False"
                        >
                 <FlowDocument>
                     <Paragraph>
@@ -192,7 +199,8 @@
                        BorderThickness="0" 
                        SelectionBrush="#FF0D8B00"
                        IsEnabled="True"
-                       IsReadOnly="True">
+                       IsReadOnly="True"
+                       IsTabStop="False">
                 <FlowDocument>
                     <Paragraph>
                         <Run Text="{Binding RightMemoryDumpCurrentlyDisplayed, Mode=OneWay}"></Run>
