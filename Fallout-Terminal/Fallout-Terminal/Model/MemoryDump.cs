@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Fallout_Terminal.Utilities;
 
 namespace Fallout_Terminal.Model
 {
@@ -98,13 +97,13 @@ namespace Fallout_Terminal.Model
             // Is there another password immediately to the right?
             if ((position + (passwords[0].Length) + 1 <= LENGTH))
             {
-                if (IsLetterChecker.IsLetter(Contents[position + passwords[0].Length + 1]))
+                if (Char.IsLetter(Contents[position + passwords[0].Length + 1]))
                 {
                     return false;
                 }
             }
             // Is there another password immediately to the left?
-            if ((position != 0) && (IsLetterChecker.IsLetter(Contents[position - 1])))
+            if ((position != 0) && (Char.IsLetter(Contents[position - 1])))
             {
                 return false;
             }

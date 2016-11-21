@@ -7,7 +7,6 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Documents;
 using System.Windows.Input;
-using Fallout_Terminal.Utilities;
 
 namespace Fallout_Terminal.View
 {
@@ -140,27 +139,25 @@ namespace Fallout_Terminal.View
 
         private void ResizeSelectionForWords(Side column)
         {
-            bool finished = false;
             LeftJumpOffset = 0;
             RightJumpOffset = 0;
+            bool finished = false;
             while (!finished)
             {
                 if (column == Side.Left)
                 {
                     // We only need to check the adjacent characters if the current character is a letter.
-                    if (IsLetterChecker.IsLetter(MainWindow.LeftPasswordColumn.Selection.Text[0])
-                            || MainWindow.LeftPasswordColumn.Selection.Text[0] == '\u000D'
-                            || MainWindow.LeftPasswordColumn.Selection.Text[0] == '\u000A')
+                    if (Char.IsLetter(MainWindow.LeftPasswordColumn.Selection.Text[0])
+                            || MainWindow.LeftPasswordColumn.Selection.Text[0] == '\n')
                     {
                         char charBefore = LeftStart.GetTextInRun(LogicalDirection.Backward).LastOrDefault();
                         char charAfter = LeftEnd.GetTextInRun(LogicalDirection.Forward).FirstOrDefault();
-                        Console.WriteLine("charBefore == " + charBefore + "... charAfter == " + charAfter);
-                        if (IsLetterChecker.IsLetter(charBefore) || charBefore == '\u000D' || charBefore == '\u000A')
+                        if (Char.IsLetter(charBefore) || charBefore == '\n')
                         {
                             LeftStart = LeftStart.GetPositionAtOffset(-1);
                             LeftJumpOffset++;
                         }
-                        else if (IsLetterChecker.IsLetter(charAfter) || charAfter == '\u000D' || charAfter == '\u000A')
+                        else if (Char.IsLetter(charAfter) || charAfter == '\n')
                         {
                             LeftEnd = LeftEnd.GetPositionAtOffset(1);
                             RightJumpOffset++;
@@ -180,19 +177,17 @@ namespace Fallout_Terminal.View
                 }
                 else if (column == Side.Right)
                 {
-                    if (IsLetterChecker.IsLetter(MainWindow.RightPasswordColumn.Selection.Text[0])
-                            || MainWindow.RightPasswordColumn.Selection.Text[0] == '\u000D'
-                            || MainWindow.RightPasswordColumn.Selection.Text[0] == '\u000A')
+                    if (Char.IsLetter(MainWindow.RightPasswordColumn.Selection.Text[0])
+                            || MainWindow.RightPasswordColumn.Selection.Text[0] == '\n')
                     {
                         char charBefore = RightStart.GetTextInRun(LogicalDirection.Backward).LastOrDefault();
                         char charAfter = RightEnd.GetTextInRun(LogicalDirection.Forward).FirstOrDefault();
-                        Console.WriteLine("charBefore == " + charBefore + "... charAfter == " + charAfter);
-                        if (IsLetterChecker.IsLetter(charBefore) || charBefore == '\u000D' || charBefore == '\u000A')
+                        if (Char.IsLetter(charBefore) || charBefore == '\n')
                         {
                             RightStart = RightStart.GetPositionAtOffset(-1);
                             LeftJumpOffset++;
                         }
-                        else if (IsLetterChecker.IsLetter(charAfter) || charAfter == '\u000D' || charAfter == '\u000A')
+                        else if (Char.IsLetter(charAfter) || charAfter == '\n')
                         {
                             RightEnd = RightEnd.GetPositionAtOffset(1);
                             RightJumpOffset++;
@@ -241,7 +236,25 @@ namespace Fallout_Terminal.View
 
         private void SubmitSelection()
         {
-
+            string selection = "";
+            Side column = (X < TerminalViewModel.NUMBER_OF_COLUMNS) ? Side.Left : Side.Right;
+            if (column == Side.Left)
+            {
+                selection = MainWindow.LeftPasswordColumn.Selection.Text;
+            }
+            else if (column == Side.Right)
+            {
+                selection = MainWindow.RightPasswordColumn.Selection.Text;
+            }
+            string parsedSelection = "";
+            for(int i = 0; i < selection.Count(); i++)
+            {
+                if (selection[i] != '\n')
+                {
+                    parsedSelection += selection[i];
+                }
+            }
+            TerminalViewModel.Submit(parsedSelection);
         }
     }
 }

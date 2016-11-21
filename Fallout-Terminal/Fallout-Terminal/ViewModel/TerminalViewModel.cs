@@ -216,11 +216,11 @@ namespace Fallout_Terminal.ViewModel
                     // We need to add a new line after the last character in each line.
                     if (isLeftColumn)
                     {
-                        LeftMemoryDumpCurrentlyDisplayed += ('\u000D');
+                        LeftMemoryDumpCurrentlyDisplayed += ('\n');
                     }
                     else
                     {
-                        RightMemoryDumpCurrentlyDisplayed += ('\u000D');
+                        RightMemoryDumpCurrentlyDisplayed += ('\n');
                     }
                 }
             }
