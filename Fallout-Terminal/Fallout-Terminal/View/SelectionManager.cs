@@ -7,23 +7,28 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Documents;
 using System.Windows.Input;
+using Fallout_Terminal.Utilities;
 
 namespace Fallout_Terminal.View
 {
     public class SelectionManager
     {
         private MainWindow MainWindow;
-        private int y;
-        private int x;
         private TextPointer LeftStart;
         private TextPointer LeftEnd;
         private TextPointer RightStart;
         private TextPointer RightEnd;
+        private int Y;
+        private int X;
+        private int Offset;
+        private int LeftJumpOffset;
+        private int RightJumpOffset;
         private enum Side
         {
             Left,
             Right
         }
+        private bool IsWordCurrentlySelected = false;
 
         /// <summary>
         /// Creates a standard instance of the SelectionManager class.
@@ -31,8 +36,8 @@ namespace Fallout_Terminal.View
         public SelectionManager(MainWindow window)
         {
             MainWindow = window;
-            y = 0;
-            x = 0;
+            Y = 0;
+            X = 0;
         }
 
         /// <summary>
@@ -58,80 +63,185 @@ namespace Fallout_Terminal.View
                     MoveSelectionDown();
                     break;
                 case (Key.Enter):
-                    // TODO: Implement selection submission.
-                    break;
-                default:
+                    SubmitSelection();
                     break;
             }
-            Console.WriteLine(y + " " + x);
         }
 
         private void MoveSelectionLeft()
         {
-            if(x > 0)
+            if(X > 0)
             {
-                x--;
+                if (IsWordCurrentlySelected)
+                {
+                    JumpToLeftEndOfSelectedWord();
+                }
+                X--;
                 MoveSelection();
             }
         }
 
         private void MoveSelectionRight()
         {
-            if(x < (TerminalViewModel.NUMBER_OF_COLUMNS * 2) - 1)
+            if(X < (TerminalViewModel.NUMBER_OF_COLUMNS * 2) - 1)
             {
-                x++;
+                if (IsWordCurrentlySelected)
+                {
+                    JumpToRightEndOfSelectedWord();
+                }
+                X++;
                 MoveSelection();
             }
         }
 
         private void MoveSelectionUp()
         {
-            if (y > 0)
+            if (Y > 0)
             {
-                y--;
+                Y--;
                 MoveSelection();
             }
         }
 
         private void MoveSelectionDown()
         {
-            if (y < TerminalViewModel.NUMBER_OF_LINES - 1)
+            if (Y < TerminalViewModel.NUMBER_OF_LINES - 1)
             {
-                y++;
+                Y++;
                 MoveSelection();
             }
         }
 
         private void MoveSelection()
         {
-            if(x < TerminalViewModel.NUMBER_OF_COLUMNS)
+            if(X < TerminalViewModel.NUMBER_OF_COLUMNS)
             {
                 MainWindow.LeftPasswordColumn.Focus();
                 LeftStart = MainWindow.LeftPasswordColumn.Document.ContentStart;
                 LeftEnd = LeftStart.GetPositionAtOffset(1);
-                int offset;
-                offset = 2 + x + (y * (TerminalViewModel.NUMBER_OF_COLUMNS + 2));
-                LeftStart = LeftStart.GetPositionAtOffset(offset);
+                Offset = CalculateOffset(Side.Left);
+                LeftStart = LeftStart.GetPositionAtOffset(Offset);
                 LeftEnd = LeftStart.GetPositionAtOffset(1);
                 MainWindow.LeftPasswordColumn.Selection.Select(LeftStart, LeftEnd);
+                ResizeSelectionForWords(Side.Left);
             }
-            else if (x >= TerminalViewModel.NUMBER_OF_COLUMNS)
+            else if (X >= TerminalViewModel.NUMBER_OF_COLUMNS)
             {
                 MainWindow.RightPasswordColumn.Focus();
-                // Reset the position on the TextPointers to the beginning. It's much easier this way.
                 RightStart = MainWindow.RightPasswordColumn.Document.ContentStart;
                 RightEnd = RightStart.GetPositionAtOffset(1);
-                int offset;
-                offset = (x - TerminalViewModel.NUMBER_OF_COLUMNS + 2) + (y * (TerminalViewModel.NUMBER_OF_COLUMNS + 2));
-                RightStart = RightStart.GetPositionAtOffset(offset);
+                Offset = CalculateOffset(Side.Right);
+                RightStart = RightStart.GetPositionAtOffset(Offset);
                 RightEnd = RightStart.GetPositionAtOffset(1);
                 MainWindow.RightPasswordColumn.Selection.Select(RightStart, RightEnd);
+                ResizeSelectionForWords(Side.Right);
             }
         }
 
         private void ResizeSelectionForWords(Side column)
         {
-            
+            bool finished = false;
+            LeftJumpOffset = 0;
+            RightJumpOffset = 0;
+            while (!finished)
+            {
+                if (column == Side.Left)
+                {
+                    // We only need to check the adjacent characters if the current character is a letter.
+                    if (IsLetterChecker.IsLetter(MainWindow.LeftPasswordColumn.Selection.Text[0])
+                            || MainWindow.LeftPasswordColumn.Selection.Text[0] == '\u000D'
+                            || MainWindow.LeftPasswordColumn.Selection.Text[0] == '\u000A')
+                    {
+                        char charBefore = LeftStart.GetTextInRun(LogicalDirection.Backward).LastOrDefault();
+                        char charAfter = LeftEnd.GetTextInRun(LogicalDirection.Forward).FirstOrDefault();
+                        Console.WriteLine("charBefore == " + charBefore + "... charAfter == " + charAfter);
+                        if (IsLetterChecker.IsLetter(charBefore) || charBefore == '\u000D' || charBefore == '\u000A')
+                        {
+                            LeftStart = LeftStart.GetPositionAtOffset(-1);
+                            LeftJumpOffset++;
+                        }
+                        else if (IsLetterChecker.IsLetter(charAfter) || charAfter == '\u000D' || charAfter == '\u000A')
+                        {
+                            LeftEnd = LeftEnd.GetPositionAtOffset(1);
+                            RightJumpOffset++;
+                        }
+                        else
+                        {
+                            finished = true;
+                            IsWordCurrentlySelected = true;
+                        }
+                        MainWindow.LeftPasswordColumn.Selection.Select(LeftStart, LeftEnd);
+                    }
+                    else
+                    {
+                        finished = true;
+                        IsWordCurrentlySelected = false;
+                    }
+                }
+                else if (column == Side.Right)
+                {
+                    if (IsLetterChecker.IsLetter(MainWindow.RightPasswordColumn.Selection.Text[0])
+                            || MainWindow.RightPasswordColumn.Selection.Text[0] == '\u000D'
+                            || MainWindow.RightPasswordColumn.Selection.Text[0] == '\u000A')
+                    {
+                        char charBefore = RightStart.GetTextInRun(LogicalDirection.Backward).LastOrDefault();
+                        char charAfter = RightEnd.GetTextInRun(LogicalDirection.Forward).FirstOrDefault();
+                        Console.WriteLine("charBefore == " + charBefore + "... charAfter == " + charAfter);
+                        if (IsLetterChecker.IsLetter(charBefore) || charBefore == '\u000D' || charBefore == '\u000A')
+                        {
+                            RightStart = RightStart.GetPositionAtOffset(-1);
+                            LeftJumpOffset++;
+                        }
+                        else if (IsLetterChecker.IsLetter(charAfter) || charAfter == '\u000D' || charAfter == '\u000A')
+                        {
+                            RightEnd = RightEnd.GetPositionAtOffset(1);
+                            RightJumpOffset++;
+                        }
+                        else
+                        {
+                            finished = true;
+                            IsWordCurrentlySelected = true;
+                        }
+                        MainWindow.RightPasswordColumn.Selection.Select(RightStart, RightEnd);
+                    }
+                    else
+                    {
+                        finished = true;
+                        IsWordCurrentlySelected = false;
+                    }
+                }
+            }
+        }
+
+        private void JumpToLeftEndOfSelectedWord()
+        {
+            X -= LeftJumpOffset;
+        }
+
+        private void JumpToRightEndOfSelectedWord()
+        {
+            X += RightJumpOffset;
+        }
+
+        private int CalculateOffset(Side column)
+        {
+            if (column == Side.Left)
+            {
+                return (2 + X) + (Y * (TerminalViewModel.NUMBER_OF_COLUMNS + 1));
+            }
+            else if (column == Side.Right)
+            {
+                return (2 + X - TerminalViewModel.NUMBER_OF_COLUMNS) + (Y * (TerminalViewModel.NUMBER_OF_COLUMNS + 1));
+            }
+            else
+            {
+                return 0;
+            }
+        }
+
+        private void SubmitSelection()
+        {
+
         }
     }
 }

@@ -174,7 +174,7 @@
                        SelectionBrush="#FF0D8B00"
                        IsEnabled="True"
                        IsReadOnly="True"
-                       IsTabStop="False"
+                       IsTabStop="False" AutoWordSelection="False" IsUndoEnabled="False"
                        >
                 <FlowDocument>
                     <Paragraph>
