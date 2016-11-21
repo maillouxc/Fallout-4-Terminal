@@ -258,5 +258,13 @@ namespace Fallout_Terminal.ViewModel
             Notify("RightMemoryDumpCurrentlyDisplayed");
             Notify("InputColumnCurrentlyDisplayed");
         }
+
+        /// <summary>
+        /// Submits the entry passed to it for checking, whether that be a password or something else.
+        /// </summary>
+        public void Submit(string input)
+        {
+            // TODO: Add functionality.
+        }
     }
 }

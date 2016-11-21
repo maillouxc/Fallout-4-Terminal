@@ -17,7 +17,8 @@ namespace Fallout_Terminal
     /// </summary>
     public partial class MainWindow : Window
     {
-        private TerminalViewModel ViewModel;
+        public TerminalViewModel ViewModel;
+
         private SoundManager SoundManager;
         private SelectionManager SelectionManager;
 

@@ -46,7 +46,6 @@ namespace Fallout_Terminal.View
         /// <param name="args"></param>
         internal void OnKeyDown(object sender, KeyEventArgs args)
         {
-            Console.WriteLine(args.Key.ToString());
             switch (args.Key)
             {
                 case (Key.Left):
@@ -254,7 +253,7 @@ namespace Fallout_Terminal.View
                     parsedSelection += selection[i];
                 }
             }
-            TerminalViewModel.Submit(parsedSelection);
+            MainWindow.ViewModel.Submit(parsedSelection);
         }
     }
 }
