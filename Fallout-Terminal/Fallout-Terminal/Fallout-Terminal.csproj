@@ -55,6 +55,8 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Model\AttemptsChangedEventArgs.cs" />
+    <Compile Include="Model\InputColumn.cs" />
     <Compile Include="View\SelectionManager.cs" />
     <Page Include="View\MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>

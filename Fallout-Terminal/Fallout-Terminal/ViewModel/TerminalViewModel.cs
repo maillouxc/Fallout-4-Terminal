@@ -5,7 +5,6 @@ using System.Text;
 using System.Threading.Tasks;
 using Fallout_Terminal.Model;
 using System.ComponentModel;
-using Fallout_Terminal.View;
 
 namespace Fallout_Terminal.ViewModel
 {
@@ -31,9 +30,6 @@ namespace Fallout_Terminal.ViewModel
 
         public event PropertyChangedEventHandler PropertyChanged;
 
-        public const int NUMBER_OF_LINES = 16; // The number of lines of body text.
-        public const int NUMBER_OF_COLUMNS = 12;
-
         private const string ROBCO_TEXT = "Welcome to ROBCO Industries (TM) Termlink " + "\u000D" + "\u000A" + "Password Required";
         private const string DEFAULT_ATTEMPTS_TEXT = "Attempts Remaining: \u25AE \u25AE \u25AE \u25AE";
         private const int DELAY_TIME = 0; // Milliseconds.
@@ -47,6 +43,7 @@ namespace Fallout_Terminal.ViewModel
         public TerminalViewModel()
         {
             PowerIsOn = false;
+            // The instance of terminal model is initialized in the PowerOn() method.
         }
 
         /// <summary>
@@ -59,6 +56,7 @@ namespace Fallout_Terminal.ViewModel
             TerminalModel = new TerminalModel();
             await InitializeScreen();
             ScreenIsReady = true;
+            TerminalModel.AttemptsChanged += AttemptsChanged;
         }
 
         /// <summary>
@@ -88,7 +86,7 @@ namespace Fallout_Terminal.ViewModel
                 PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
             }
         }
-
+         
         /// <summary>
         /// Begins populating the screen with characters, one at a time.
         /// We await the method calls within because we want them to be non-blocking, but also sequential (not simultaneous).
@@ -136,7 +134,7 @@ namespace Fallout_Terminal.ViewModel
         /// </summary>
         async private Task InitializeBodyText()
         {
-            for (int line = 0; line < NUMBER_OF_LINES; line++)
+            for (int line = 0; line < TerminalModel.NUMBER_OF_LINES; line++)
             {
                 bool isLeftColumn = true;
                 await InitializeNextHexValue(isLeftColumn, line);
@@ -260,11 +258,32 @@ namespace Fallout_Terminal.ViewModel
         }
 
         /// <summary>
+        /// Called whenever the number of attempts to guess the password remaining changes.
+        /// </summary>
+        private void AttemptsChanged(object sender, AttemptsChangedEventArgs args)
+        {
+            // We don't really need to use the StringBuilder class here, as performance is not a concern,
+            // but it's good practice anyways.
+            StringBuilder s = new StringBuilder();
+            for (int i = 0; i < args.AttemptsRemaining; i++)
+            {
+                s.Append("\u25AE ");
+            }
+            AttemptsTextCurrentlyDisplayed = "Attempts Remaining: " + s.ToString();
+            Notify("AttemptsTextCurrentlyDisplayed");
+        }
+
+        /// <summary>
         /// Submits the entry passed to it for checking, whether that be a password or something else.
         /// </summary>
         public void Submit(string input)
         {
-            // TODO: Add functionality.
+            TerminalModel.ProcessInput(input);
+        }
+
+        public void UpdateContents()
+        {
+
         }
     }
 }

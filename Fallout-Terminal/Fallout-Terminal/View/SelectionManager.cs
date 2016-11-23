@@ -1,4 +1,5 @@
-﻿using Fallout_Terminal.ViewModel;
+﻿using Fallout_Terminal.Model;
+using Fallout_Terminal.ViewModel;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,6 +11,9 @@ using System.Windows.Input;
 
 namespace Fallout_Terminal.View
 {
+    /// <summary>
+    /// Manages the selection of text on the screen that the player does with the arrow keys.
+    /// </summary>
     public class SelectionManager
     {
         private MainWindow MainWindow;
@@ -66,6 +70,9 @@ namespace Fallout_Terminal.View
             }
         }
 
+        /// <summary>
+        /// Moves the selection cursor left.
+        /// </summary>
         private void MoveSelectionLeft()
         {
             if(X > 0)
@@ -79,9 +86,12 @@ namespace Fallout_Terminal.View
             }
         }
 
+        /// <summary>
+        /// Moves the selection cursor right.
+        /// </summary>
         private void MoveSelectionRight()
         {
-            if(X < (TerminalViewModel.NUMBER_OF_COLUMNS * 2) - 1)
+            if(X < (TerminalModel.NUMBER_OF_COLUMNS * 2) - 1)
             {
                 if (IsWordCurrentlySelected)
                 {
@@ -92,6 +102,9 @@ namespace Fallout_Terminal.View
             }
         }
 
+        /// <summary>
+        /// Moves the selection cursor up.
+        /// </summary>
         private void MoveSelectionUp()
         {
             if (Y > 0)
@@ -101,18 +114,25 @@ namespace Fallout_Terminal.View
             }
         }
 
+        /// <summary>
+        /// Moves the selection cursor down.
+        /// </summary>
         private void MoveSelectionDown()
         {
-            if (Y < TerminalViewModel.NUMBER_OF_LINES - 1)
+            if (Y < TerminalModel.NUMBER_OF_LINES - 1)
             {
                 Y++;
                 MoveSelection();
             }
         }
 
+        /// <summary>
+        /// Actually moves the selection. Handles changing of focus as appropriate,
+        /// and adjustment of the textPointer positions.
+        /// </summary>
         private void MoveSelection()
         {
-            if(X < TerminalViewModel.NUMBER_OF_COLUMNS)
+            if(X < TerminalModel.NUMBER_OF_COLUMNS)
             {
                 MainWindow.LeftPasswordColumn.Focus();
                 LeftStart = MainWindow.LeftPasswordColumn.Document.ContentStart;
@@ -123,7 +143,7 @@ namespace Fallout_Terminal.View
                 MainWindow.LeftPasswordColumn.Selection.Select(LeftStart, LeftEnd);
                 ResizeSelectionForWords(Side.Left);
             }
-            else if (X >= TerminalViewModel.NUMBER_OF_COLUMNS)
+            else if (X >= TerminalModel.NUMBER_OF_COLUMNS)
             {
                 MainWindow.RightPasswordColumn.Focus();
                 RightStart = MainWindow.RightPasswordColumn.Document.ContentStart;
@@ -136,6 +156,10 @@ namespace Fallout_Terminal.View
             }
         }
 
+        /// <summary>
+        /// Expands the text selection to fit entire words whenever a letter is selected.
+        /// </summary>
+        /// <param name="column">The column (left or right) that the selection is in.</param>
         private void ResizeSelectionForWords(Side column)
         {
             LeftJumpOffset = 0;
@@ -205,27 +229,39 @@ namespace Fallout_Terminal.View
                     }
                 }
             }
+            UpdateSelection();
         }
 
+        /// <summary>
+        /// Adjusts selection cursor to just past the left end of the selected word.
+        /// </summary>
         private void JumpToLeftEndOfSelectedWord()
         {
             X -= LeftJumpOffset;
         }
 
+        /// <summary>
+        /// Adjusts the selection cursor to just past the right end of the selected word.
+        /// </summary>
         private void JumpToRightEndOfSelectedWord()
         {
             X += RightJumpOffset;
         }
 
+        /// <summary>
+        /// Calculates the offset for positioning the textPointers, from the X and Y coordinates in the class.
+        /// </summary>
+        /// <param name="column">The column the current selection is in.</param>
+        /// <returns></returns>
         private int CalculateOffset(Side column)
         {
             if (column == Side.Left)
             {
-                return (2 + X) + (Y * (TerminalViewModel.NUMBER_OF_COLUMNS + 1));
+                return (2 + X) + (Y * (TerminalModel.NUMBER_OF_COLUMNS + 1));
             }
             else if (column == Side.Right)
             {
-                return (2 + X - TerminalViewModel.NUMBER_OF_COLUMNS) + (Y * (TerminalViewModel.NUMBER_OF_COLUMNS + 1));
+                return (2 + X - TerminalModel.NUMBER_OF_COLUMNS) + (Y * (TerminalModel.NUMBER_OF_COLUMNS + 1));
             }
             else
             {
@@ -233,10 +269,13 @@ namespace Fallout_Terminal.View
             }
         }
 
+        /// <summary>
+        /// Submits the current selection to the viewModel to be processed by the game logic.
+        /// </summary>
         private void SubmitSelection()
         {
             string selection = "";
-            Side column = (X < TerminalViewModel.NUMBER_OF_COLUMNS) ? Side.Left : Side.Right;
+            Side column = (X < TerminalModel.NUMBER_OF_COLUMNS) ? Side.Left : Side.Right;
             if (column == Side.Left)
             {
                 selection = MainWindow.LeftPasswordColumn.Selection.Text;
@@ -254,6 +293,11 @@ namespace Fallout_Terminal.View
                 }
             }
             MainWindow.ViewModel.Submit(parsedSelection);
+        }
+
+        private void UpdateSelection()
+        {
+
         }
     }
 }
