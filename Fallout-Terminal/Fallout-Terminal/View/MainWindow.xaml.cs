@@ -10,6 +10,7 @@ using Fallout_Terminal.ViewModel;
 using Fallout_Terminal.Sound;
 using Fallout_Terminal.View;
 using System.Windows.Media;
+using System.Threading.Tasks;
 
 namespace Fallout_Terminal
 {
@@ -59,6 +60,75 @@ namespace Fallout_Terminal
                 ViewModel.PowerOn();
                 SoundManager.PlaySound(@"..\..\Resources\Sounds\powerOn.wav");
                 //TODO: Think about this some more. Is this the right way to do this?
+            }
+        }
+
+        /// <summary>
+        /// Fired whenever the text in the LeftPasswordColumn changes.
+        /// </summary>
+        private async void LeftPasswordColumn_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            if (SoundManager != null)
+            {
+                await Task.Delay(TerminalViewModel.DELAY_TIME);
+                SoundManager.PlayCharacterDisplaySound();
+            }
+        }
+
+        /// <summary>
+        /// Fired whenever the text in the RightPasswordColumn changes.
+        /// </summary>
+        private async void RightPasswordColumn_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            if (SoundManager != null)
+            {
+                await Task.Delay(TerminalViewModel.DELAY_TIME);
+                SoundManager.PlayCharacterDisplaySound();
+            }
+        }
+
+        /// <summary>
+        /// Fired whenever the text in the left hex column is changed.
+        /// </summary>
+        private async void LeftHexColumn_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            if (SoundManager != null)
+            {
+                await Task.Delay(TerminalViewModel.DELAY_TIME);
+                SoundManager.PlayCharacterDisplaySound();
+            }
+        }
+
+        /// <summary>
+        /// Fired whenever the text in the right hex column has changed.
+        /// </summary>
+        private async void RightHexColumn_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            if (SoundManager != null)
+            {
+                await Task.Delay(TerminalViewModel.DELAY_TIME);
+                SoundManager.PlayCharacterDisplaySound();
+            }
+        }
+
+        /// <summary>
+        /// Fired whenever the headertext changes.
+        /// </summary>
+        private async void HeaderText_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            if (SoundManager != null)
+            {
+                await Task.Delay(TerminalViewModel.DELAY_TIME);
+                SoundManager.PlayCharacterDisplaySound();
+            }
+        }
+
+        private async void AttemptsText_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            if (SoundManager != null)
+            {
+                await Task.Delay(TerminalViewModel.DELAY_TIME);
+                SoundManager.PlayCharacterDisplaySound();
             }
         }
     }

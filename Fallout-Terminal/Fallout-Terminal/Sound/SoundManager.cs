@@ -87,7 +87,7 @@ namespace Fallout_Terminal.Sound
         /// </summary>
         public void PlayCharacterDisplaySound()
         {
-            string filePath = @"..\..\Resources\Sounds\typing10.wav";
+            string filePath = @"..\..\Resources\Sounds\typing6.wav";
             PlaySound(filePath);
         }
     }

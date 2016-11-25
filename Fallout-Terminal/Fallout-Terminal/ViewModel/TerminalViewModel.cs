@@ -30,9 +30,10 @@ namespace Fallout_Terminal.ViewModel
 
         public event PropertyChangedEventHandler PropertyChanged;
 
+        public const int DELAY_TIME = 30; // Milliseconds.
+
         private const string ROBCO_TEXT = "Welcome to ROBCO Industries (TM) Termlink " + "\u000D" + "\u000A" + "Password Required";
         private const string DEFAULT_ATTEMPTS_TEXT = "Attempts Remaining: \u25AE \u25AE \u25AE \u25AE";
-        private const int DELAY_TIME = 2; // Milliseconds.
 
         private TerminalModel TerminalModel;
         private bool ScreenIsReady = false;
@@ -294,7 +295,6 @@ namespace Fallout_Terminal.ViewModel
                 await Task.Delay(DELAY_TIME);
                 InputColumnCurrentlyDisplayed += character;
                 Notify("InputColumnCurrentlyDisplayed");
-                
             }
         }
     }
