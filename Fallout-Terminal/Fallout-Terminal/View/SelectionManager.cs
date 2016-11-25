@@ -1,4 +1,5 @@
 ﻿using Fallout_Terminal.Model;
+using Fallout_Terminal.Utilities;
 using Fallout_Terminal.ViewModel;
 using System;
 using System.Collections.Generic;
@@ -23,7 +24,6 @@ namespace Fallout_Terminal.View
         private TextPointer RightEnd;
         private int Y;
         private int X;
-        private int Offset;
         private int LeftJumpOffset;
         private int RightJumpOffset;
         private enum Side
@@ -31,6 +31,7 @@ namespace Fallout_Terminal.View
             Left,
             Right
         }
+        private Side ActiveSide;
         private bool IsWordCurrentlySelected = false;
 
         /// <summary>
@@ -41,6 +42,8 @@ namespace Fallout_Terminal.View
             MainWindow = window;
             Y = 0;
             X = 0;
+            ActiveSide = Side.Left;
+            // TODO: Use event to fix so that first character starts out visibly selected upon each start.
         }
 
         /// <summary>
@@ -65,7 +68,7 @@ namespace Fallout_Terminal.View
                     MoveSelectionDown();
                     break;
                 case (Key.Enter):
-                    SubmitSelection();
+                    SubmitSelection(GetSelection());
                     break;
             }
         }
@@ -132,46 +135,45 @@ namespace Fallout_Terminal.View
         /// </summary>
         private void MoveSelection()
         {
-            if(X < TerminalModel.NUMBER_OF_COLUMNS)
+            UpdateActiveSide();
+            int offset = CalculateOffset();
+            if(ActiveSide == Side.Left)
             {
                 MainWindow.LeftPasswordColumn.Focus();
                 LeftStart = MainWindow.LeftPasswordColumn.Document.ContentStart;
                 LeftEnd = LeftStart.GetPositionAtOffset(1);
-                Offset = CalculateOffset(Side.Left);
-                LeftStart = LeftStart.GetPositionAtOffset(Offset);
+                LeftStart = LeftStart.GetPositionAtOffset(offset);
                 LeftEnd = LeftStart.GetPositionAtOffset(1);
                 MainWindow.LeftPasswordColumn.Selection.Select(LeftStart, LeftEnd);
-                ResizeSelectionForWords(Side.Left);
             }
-            else if (X >= TerminalModel.NUMBER_OF_COLUMNS)
+            else if (ActiveSide == Side.Right)
             {
                 MainWindow.RightPasswordColumn.Focus();
                 RightStart = MainWindow.RightPasswordColumn.Document.ContentStart;
                 RightEnd = RightStart.GetPositionAtOffset(1);
-                Offset = CalculateOffset(Side.Right);
-                RightStart = RightStart.GetPositionAtOffset(Offset);
+                RightStart = RightStart.GetPositionAtOffset(offset);
                 RightEnd = RightStart.GetPositionAtOffset(1);
                 MainWindow.RightPasswordColumn.Selection.Select(RightStart, RightEnd);
-                ResizeSelectionForWords(Side.Right);
             }
+            ResizeSelectionForWords();
+            NotifySelectionChanged();
         }
 
         /// <summary>
         /// Expands the text selection to fit entire words whenever a letter is selected.
         /// </summary>
         /// <param name="column">The column (left or right) that the selection is in.</param>
-        private void ResizeSelectionForWords(Side column)
+        private void ResizeSelectionForWords()
         {
             LeftJumpOffset = 0;
             RightJumpOffset = 0;
             bool finished = false;
             while (!finished)
             {
-                if (column == Side.Left)
+                if (ActiveSide == Side.Left)
                 {
                     // We only need to check the adjacent characters if the current character is a letter.
-                    if (Char.IsLetter(MainWindow.LeftPasswordColumn.Selection.Text[0])
-                            || MainWindow.LeftPasswordColumn.Selection.Text[0] == '\n')
+                    if (Char.IsLetter(MainWindow.LeftPasswordColumn.Selection.Text[0]) || MainWindow.LeftPasswordColumn.Selection.Text[0] == '\n')
                     {
                         char charBefore = LeftStart.GetTextInRun(LogicalDirection.Backward).LastOrDefault();
                         char charAfter = LeftEnd.GetTextInRun(LogicalDirection.Forward).FirstOrDefault();
@@ -198,10 +200,9 @@ namespace Fallout_Terminal.View
                         IsWordCurrentlySelected = false;
                     }
                 }
-                else if (column == Side.Right)
+                else if (ActiveSide == Side.Right)
                 {
-                    if (Char.IsLetter(MainWindow.RightPasswordColumn.Selection.Text[0])
-                            || MainWindow.RightPasswordColumn.Selection.Text[0] == '\n')
+                    if (Char.IsLetter(MainWindow.RightPasswordColumn.Selection.Text[0]) || MainWindow.RightPasswordColumn.Selection.Text[0] == '\n')
                     {
                         char charBefore = RightStart.GetTextInRun(LogicalDirection.Backward).LastOrDefault();
                         char charAfter = RightEnd.GetTextInRun(LogicalDirection.Forward).FirstOrDefault();
@@ -229,7 +230,6 @@ namespace Fallout_Terminal.View
                     }
                 }
             }
-            UpdateSelection();
         }
 
         /// <summary>
@@ -237,7 +237,9 @@ namespace Fallout_Terminal.View
         /// </summary>
         private void JumpToLeftEndOfSelectedWord()
         {
+            // TODO: Fix bug when split across multiple lines.
             X -= LeftJumpOffset;
+            UpdateActiveSide();
         }
 
         /// <summary>
@@ -245,7 +247,9 @@ namespace Fallout_Terminal.View
         /// </summary>
         private void JumpToRightEndOfSelectedWord()
         {
+            // TODO: Fix bug when split across multiple lines.
             X += RightJumpOffset;
+            UpdateActiveSide();
         }
 
         /// <summary>
@@ -253,51 +257,64 @@ namespace Fallout_Terminal.View
         /// </summary>
         /// <param name="column">The column the current selection is in.</param>
         /// <returns></returns>
-        private int CalculateOffset(Side column)
+        private int CalculateOffset()
         {
-            if (column == Side.Left)
+            if (ActiveSide == Side.Left)
             {
                 return (2 + X) + (Y * (TerminalModel.NUMBER_OF_COLUMNS + 1));
             }
-            else if (column == Side.Right)
+            else if (ActiveSide == Side.Right)
             {
                 return (2 + X - TerminalModel.NUMBER_OF_COLUMNS) + (Y * (TerminalModel.NUMBER_OF_COLUMNS + 1));
             }
-            else
-            {
-                return 0;
-            }
+            return 0;
         }
 
         /// <summary>
         /// Submits the current selection to the viewModel to be processed by the game logic.
         /// </summary>
-        private void SubmitSelection()
+        private void SubmitSelection(string selection)
+        {
+            MainWindow.ViewModel.Submit(selection);
+        }
+
+        /// <summary>
+        /// Returns the current user selection, as a parsed string in which the newline characters have been removed.
+        /// </summary>
+        /// <returns></returns>
+        private string GetSelection()
         {
             string selection = "";
-            Side column = (X < TerminalModel.NUMBER_OF_COLUMNS) ? Side.Left : Side.Right;
-            if (column == Side.Left)
+            if (ActiveSide == Side.Left)
             {
                 selection = MainWindow.LeftPasswordColumn.Selection.Text;
             }
-            else if (column == Side.Right)
+            else if (ActiveSide == Side.Right)
             {
                 selection = MainWindow.RightPasswordColumn.Selection.Text;
             }
-            string parsedSelection = "";
-            for(int i = 0; i < selection.Count(); i++)
-            {
-                if (selection[i] != '\n')
-                {
-                    parsedSelection += selection[i];
-                }
-            }
-            MainWindow.ViewModel.Submit(parsedSelection);
+            selection = StringUtilities.RemoveNewlines(selection);
+            return selection;
         }
 
-        private void UpdateSelection()
+        /// <summary>
+        /// Notifies the viewModel that the current user selection is changed, so that the view model can deal with it as it wishes.
+        /// Also, since we are already in the View, we might as well play the delightful clacky keyboard sounds while here.
+        /// </summary>
+        private void NotifySelectionChanged()
         {
+            string newSelection = GetSelection();
+            MainWindow.SoundManager.PlayTypingSound();
+            MainWindow.ViewModel.SelectionChanged(newSelection);
+        }
 
+        /// <summary>
+        /// Updates the class field reprsenting the side of the input we are on.
+        /// E.g., which of the 2 columns of memory dump is currently selected.
+        /// </summary>
+        private void UpdateActiveSide()
+        {
+            ActiveSide = (X < TerminalModel.NUMBER_OF_COLUMNS) ? Side.Left : Side.Right;
         }
     }
 }

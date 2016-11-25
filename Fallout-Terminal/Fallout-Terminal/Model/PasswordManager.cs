@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Fallout_Terminal.Utilities;
+using System;
 using System.Collections.Generic;
 
 namespace Fallout_Terminal.Model
@@ -10,9 +11,16 @@ namespace Fallout_Terminal.Model
     /// </summary>
     public class PasswordManager
     {
+        // TODO: Fix literally everything in this bullshit class. I don't think I ever finished it in the first place, I just moved on...
         // TODO: Determine programmatically, removing these constants.
         private const int DEFAULT_NUMBER_OF_PASSWORDS = 8;
-        private const int DEFAULT_PASSWORD_LENGTH = 6;
+        private const int DEFAULT_PASSWORD_LENGTH = 11;
+        private const int DEFAULT_LETTERS_IN_COMMON = 30;
+
+        private const int MAX_PASSWORD_LENGTH = 11;
+        private const int MIN_PASSWORD_LENGTH = 4;
+        private const int MINIMUM_NUMBER_OF_PASSWORDS = 6;
+        private const int MAXIMUM_NUMBER_OF_PASSWORDS = 12;
 
         public List<string> PotentialPasswords;
 
@@ -79,9 +87,7 @@ namespace Fallout_Terminal.Model
         /// </summary>
         private void ChooseACorrectPassword()
         {
-            // TODO: Consider using a RandomProvider rng instead.
-            Random random = new Random();
-            CorrectPassword = PotentialPasswords[random.Next(0, (PotentialPasswords.Count - 1))];
+            CorrectPassword = PotentialPasswords[RandomProvider.Next(0, (PotentialPasswords.Count - 1))];
         }
 
         /// Keeps generating lists until finding one with enough characters in common.
@@ -93,6 +99,7 @@ namespace Fallout_Terminal.Model
         /// There is almost certainly a better way to do this, but that is a job for later.
         private List<string> GetPasswordsWithEnoughLettersInCommon(int howManyPasswords, int passwordLength, int howManyInCommon)
         {
+            // TODO: Actually Use this Method
             bool enoughLettersInCommon = false;
             List<string> passwords = new List<string>();
             while (enoughLettersInCommon == false)

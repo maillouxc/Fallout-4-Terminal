@@ -32,7 +32,7 @@ namespace Fallout_Terminal.ViewModel
 
         private const string ROBCO_TEXT = "Welcome to ROBCO Industries (TM) Termlink " + "\u000D" + "\u000A" + "Password Required";
         private const string DEFAULT_ATTEMPTS_TEXT = "Attempts Remaining: \u25AE \u25AE \u25AE \u25AE";
-        private const int DELAY_TIME = 0; // Milliseconds.
+        private const int DELAY_TIME = 3; // Milliseconds.
 
         private TerminalModel TerminalModel;
         private bool ScreenIsReady = false;
@@ -281,9 +281,20 @@ namespace Fallout_Terminal.ViewModel
             TerminalModel.ProcessInput(input);
         }
 
-        public void UpdateContents()
+        /// <summary>
+        /// Should be called when the current user selection has changed.
+        /// Notifies the model and updates the text in the input column to
+        /// reflect the current selection.
+        /// </summary>
+        public async void SelectionChanged(string newSelection)
         {
-
+            InputColumnCurrentlyDisplayed = ">";
+            foreach (char character in newSelection)
+            {
+                await Task.Delay(DELAY_TIME);
+                InputColumnCurrentlyDisplayed += character;
+                Notify("InputColumnCurrentlyDisplayed");
+            }
         }
     }
 }

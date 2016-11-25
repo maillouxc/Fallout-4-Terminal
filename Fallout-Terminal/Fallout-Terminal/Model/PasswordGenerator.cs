@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Fallout_Terminal.Utilities;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -12,7 +13,6 @@ namespace Fallout_Terminal.Model
     {
         private List<string> wordsFromFile;
         private const string DEFAULT_WORDLIST_PATH = @"..\..\Resources\Misc\words.txt";
-        private Random random = RandomProvider.GetThreadRandom();
 
         /// <summary>
         /// Does nothing other than instantiate the generator and read the wordlist in from a file.
@@ -39,7 +39,7 @@ namespace Fallout_Terminal.Model
                 // TODO: Modify method to generate passwords with more letters in common to make the game easier.
                 potentialPasswords.Add(
                     wordsOfCorrectLength.ElementAt(
-                        random.Next(0, wordsOfCorrectLength.Count)
+                        RandomProvider.Next(0, wordsOfCorrectLength.Count)
                         )
                     );
                 // TODO: Fix potential (although extremely unlikely) possiblilty of two of the same words being pulled.
