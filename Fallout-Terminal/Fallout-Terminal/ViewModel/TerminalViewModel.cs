@@ -294,6 +294,7 @@ namespace Fallout_Terminal.ViewModel
                 await Task.Delay(DELAY_TIME);
                 InputColumnCurrentlyDisplayed += character;
                 Notify("InputColumnCurrentlyDisplayed");
+                
             }
         }
     }

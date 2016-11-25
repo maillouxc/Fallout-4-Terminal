@@ -38,13 +38,15 @@ namespace Fallout_Terminal.Sound
         /// </summary>
         public void PlayTypingSound()
         {
-            int randomInt = RandomProvider.Next(1, 11);
+            int randomInt = RandomProvider.Next(2, 11);
             string filePath = "";
             switch (randomInt)
             {
+                /*
                 case 1:
                     filePath = @"..\..\Resources\Sounds\typing1.wav";
                     break;
+                */
                 case 2:
                     filePath = @"..\..\Resources\Sounds\typing2.wav";
                     break;
