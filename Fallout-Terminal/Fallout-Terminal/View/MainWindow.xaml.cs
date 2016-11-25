@@ -19,7 +19,7 @@ namespace Fallout_Terminal
     {
         public TerminalViewModel ViewModel;
 
-        private SoundManager SoundManager;
+        internal SoundManager SoundManager;
         private SelectionManager SelectionManager;
 
         /// <summary>

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Fallout_Terminal.Utilities;
+using System;
 
 namespace Fallout_Terminal.Model
 {
@@ -7,8 +8,6 @@ namespace Fallout_Terminal.Model
     /// </summary>
     class GarbageCharacterGenerator
     {
-        private Random random = RandomProvider.GetThreadRandom();
-
         private static char[] garbageCharacters =
             {'!', '(', ')', '{', '}', '<', '>', '[', ']', '/', '\\', '|', '$',
             '@', ',', '\'', ';', ':', '?', '*', '^', '=', '.', '-', '+', '&', '_', '%', '#'};
@@ -19,7 +18,7 @@ namespace Fallout_Terminal.Model
         /// <returns>A random char which is one of the allowed garbage characters.</returns>
         public char GetGarbageCharacter()
         {
-            return garbageCharacters[random.Next(0, garbageCharacters.Length)];
+            return garbageCharacters[RandomProvider.Next(0, garbageCharacters.Length)];
         }
     }
 }

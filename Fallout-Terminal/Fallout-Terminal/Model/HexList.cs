@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Fallout_Terminal.Utilities;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -18,7 +19,6 @@ namespace Fallout_Terminal.Model
         private const int MIN_START_VALUE = 0;
         // TODO: Check overflow conditions.
         private const int MAX_END_VALUE = 65535 - (NUMBER_OF_VALUES_NEEDED * INCREMENT_VALUE);
-        private Random rng = RandomProvider.GetThreadRandom();
 
         
 
@@ -45,7 +45,7 @@ namespace Fallout_Terminal.Model
         /// <returns>A randomly generated int that represents what number to start generating the hex values at.</returns>
         private int GetStartNumber()
         {
-            int startNumber = rng.Next(MIN_START_VALUE, MAX_END_VALUE);
+            int startNumber = RandomProvider.Next(MIN_START_VALUE, MAX_END_VALUE);
             return startNumber;
         }
 

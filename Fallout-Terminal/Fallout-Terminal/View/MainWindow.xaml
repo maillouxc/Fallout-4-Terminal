@@ -23,7 +23,6 @@
     <Window.Resources>
         <viewmodel:TerminalViewModel x:Key="ViewModel"/>
     </Window.Resources>
-    
     <!-- This grid holds the grid for the screen, 
     as well as the power button.-->
     <Grid x:Name="grid" 
@@ -62,8 +61,6 @@
                 Padding="0"
                 IsTabStop="False"
          />
-
-        <!-- Testing Layout options-->
         <Grid Name="TerminalScreen"
               DataContext="{StaticResource ResourceKey=ViewModel}"
               Grid.Column="1"
@@ -72,7 +69,8 @@
               VerticalAlignment="Center"
               Margin="10"
               Width="Auto"
-              Height="380">
+              Height="380" 
+              ScrollViewer.VerticalScrollBarVisibility="Disabled">
             <Grid.Background>
                 <ImageBrush ImageSource="../Resources/Images/TerminalScreenBackground.png"
                             Stretch="None"/>
@@ -94,20 +92,19 @@
                 <RowDefinition Height="Auto"></RowDefinition>
                 <RowDefinition Height="Auto"></RowDefinition>
             </Grid.RowDefinitions>
-
             <TextBlock Name="HeaderText"
                        Grid.ColumnSpan="5"
-                       Grid.RowSpan="1"
                        Grid.Column="0"
                        Grid.Row="0"      
                        IsEnabled="False" 
+                       Width="500"
                        HorizontalAlignment="Left" 
-                       VerticalAlignment="Top"
+                       VerticalAlignment="Center"
                        Foreground="#FF5AC500"
                        FontFamily="Lucida Console"
                        FontSize="16px"
                        Margin="5" 
-                       LineHeight="16"
+                       LineHeight="20"
                        Text="{Binding RobcoTextCurrentlyDisplayed}">
             </TextBlock>
             <TextBlock Name="AttemptsText"
@@ -120,6 +117,7 @@
                        VerticalAlignment="Top"
                        Foreground="#FF5AC500"
                        FontFamily="Lucida Console"
+                       Width="400"
                        FontSize="16px"
                        Margin="5,10" 
                        LineHeight="16"
@@ -136,7 +134,7 @@
                        Foreground="#FF5AC500"
                        FontFamily="Lucida Console"
                        FontSize="16px"
-                       Margin="5,10,5,5" 
+                       Margin="5" 
                        LineHeight="12"
                        Text="{Binding LeftHexCurrentlyDisplayed}">
             </TextBlock>
@@ -151,10 +149,9 @@
                        Foreground="#FF5AC500"
                        FontFamily="Lucida Console" 
                        FontSize="16px"
-                       Margin="5,10,5,5" 
+                       Margin="5" 
                        LineHeight="12"
                        Text="{Binding RightHexCurrentlyDisplayed}">
-
             </TextBlock>
             <RichTextBox Name="LeftPasswordColumn"
                        Grid.ColumnSpan="1"
@@ -166,9 +163,10 @@
                        Foreground="#FF5AC500"
                        FontFamily="Lucida Console"
                        ScrollViewer.CanContentScroll="False"
+                       ScrollViewer.HorizontalScrollBarVisibility="Disabled"
                        FontSize="16px"
-                       Width="130"
-                       Margin="5,10,5,5"
+                       Width="126"
+                       Margin="5"
                        Background="{x:Null}"
                        BorderThickness="0" 
                        SelectionBrush="#FF0D8B00"
@@ -176,8 +174,8 @@
                        IsReadOnly="True"
                        IsTabStop="False" AutoWordSelection="False" IsUndoEnabled="False"
                        >
-                <FlowDocument>
-                    <Paragraph>
+                <FlowDocument PageWidth="18000">
+                    <Paragraph Margin="0">
                         <Run Text="{Binding LeftMemoryDumpCurrentlyDisplayed, Mode=OneWay}"></Run>
                     </Paragraph>
                 </FlowDocument>
@@ -193,16 +191,17 @@
                        FontFamily="Lucida Console"
                        ScrollViewer.CanContentScroll="False"
                        FontSize="16px"
-                       Width="130"
-                       Margin="5,10,5,5" 
+                       Width="126"
+                       Margin="5" 
                        Background="{x:Null}" 
                        BorderThickness="0" 
                        SelectionBrush="#FF0D8B00"
                        IsEnabled="True"
                        IsReadOnly="True"
-                       IsTabStop="False">
+                       IsTabStop="False"
+                       >
                 <FlowDocument>
-                    <Paragraph>
+                    <Paragraph Margin="0">
                         <Run Text="{Binding RightMemoryDumpCurrentlyDisplayed, Mode=OneWay}"></Run>
                     </Paragraph>
                 </FlowDocument>
@@ -213,12 +212,13 @@
                        Grid.Column="4"
                        Grid.Row="2"      
                        IsEnabled="False"
-                       HorizontalAlignment="Center" 
+                       HorizontalAlignment="Left" 
                        VerticalAlignment="Bottom"
                        Foreground="#FF5AC500"
                        FontFamily="Lucida Console"
                        FontSize="16px"
-                       Margin="5,10,5,5" 
+                       Width="130"
+                       Margin="5" 
                        LineHeight="12"
                        Text="{Binding InputColumnCurrentlyDisplayed}">
             </TextBlock>

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Fallout_Terminal.Utilities;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -15,7 +16,6 @@ namespace Fallout_Terminal.Model
 
         public string Contents { get; private set; }
 
-        private Random random = RandomProvider.GetThreadRandom();
         private GarbageCharacterGenerator GarbageCharacterGenerator;
         private List<string> passwords;
 
@@ -62,7 +62,7 @@ namespace Fallout_Terminal.Model
                 bool success = false;
                 while(!success)
                 {
-                    position = random.Next(0, (LENGTH - 1));
+                    position = RandomProvider.Next(0, (LENGTH - 1));
                     if (IsRoomForPassword(position))
                     {
                         for(int j = 0; j < passwords[index].Length; j++)
