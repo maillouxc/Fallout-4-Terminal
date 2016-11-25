@@ -123,6 +123,9 @@ namespace Fallout_Terminal
             }
         }
 
+        /// <summary>
+        /// Fired whenever the attempts remaining text is changed.
+        /// </summary>
         private async void AttemptsText_TextChanged(object sender, TextChangedEventArgs e)
         {
             if (SoundManager != null)

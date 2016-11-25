@@ -90,5 +90,11 @@ namespace Fallout_Terminal.Sound
             string filePath = @"..\..\Resources\Sounds\typing6.wav";
             PlaySound(filePath);
         }
+
+        public void PlayEnterKeySound()
+        {
+            string filePath = @"..\..\Resources\Sounds\enterKey.wav";
+            PlaySound(filePath);
+        }
     }
 }

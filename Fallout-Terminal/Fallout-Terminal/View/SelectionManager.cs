@@ -276,6 +276,7 @@ namespace Fallout_Terminal.View
         private void SubmitSelection(string selection)
         {
             MainWindow.ViewModel.Submit(selection);
+            MainWindow.SoundManager.PlayEnterKeySound();
         }
 
         /// <summary>
