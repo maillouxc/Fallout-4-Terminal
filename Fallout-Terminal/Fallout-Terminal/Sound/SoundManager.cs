@@ -80,5 +80,15 @@ namespace Fallout_Terminal.Sound
             }
             PlaySound(filePath);
         }
+
+        /// <summary>
+        /// Plays that dull "click" sound that is heard while each character on the screen is printed
+        /// for the first time.
+        /// </summary>
+        public void PlayCharacterDisplaySound()
+        {
+            string filePath = @"..\..\Resources\Sounds\typing10.wav";
+            PlaySound(filePath);
+        }
     }
 }
