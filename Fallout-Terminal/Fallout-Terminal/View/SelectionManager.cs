@@ -34,6 +34,7 @@ namespace Fallout_Terminal.View
         }
         private Side ActiveSide;
         private bool IsWordCurrentlySelected = false;
+        private bool IsBracketTrickSelected = false;
 
         /// <summary>
         /// Creates a standard instance of the SelectionManager class.
@@ -138,7 +139,7 @@ namespace Fallout_Terminal.View
         private void MoveSelection()
         {
             UpdateActiveSide();
-            int offset = CalculateOffset();
+            int offset = CalculateOffset(X, Y, ActiveSide);
             if(ActiveSide == Side.Left)
             {
                 MainWindow.LeftPasswordColumn.Focus();
@@ -158,7 +159,73 @@ namespace Fallout_Terminal.View
                 MainWindow.RightPasswordColumn.Selection.Select(RightStart, RightEnd);
             }
             ResizeSelectionForWords();
+            HandleBracketTricks();
             NotifySelectionChanged();
+        }
+
+        /// <summary>
+        /// Checks for bracket tricks at the current user selection point.
+        /// If any are found, they are selected.
+        /// </summary>
+        private void HandleBracketTricks()
+        {
+            IsBracketTrickSelected = false;
+            string selection = GetSelection();
+            char startChar = selection[0];
+            char endChar; // Not the actual endChar, but the needed one to complete the bracket pair.
+            // Bracket tricks are only selectable from the left side, which simplifies things.
+            switch (startChar)
+            {
+                case '(':
+                    endChar = ')';
+                    break;
+                case '[':
+                    endChar = ']';
+                    break;
+                case '<':
+                    endChar = '>';
+                    break;
+                case '{':
+                    endChar = '}';
+                    break;
+                default:
+                    return;
+            }
+            string textAfter;
+            if (ActiveSide == Side.Left)
+            {
+                textAfter = LeftEnd.GetTextInRun(LogicalDirection.Forward); // TODO: LeftEnd or LeftStart?
+            }
+            else // Assuming it's not null...
+            {
+                textAfter = RightEnd.GetTextInRun(LogicalDirection.Forward); // TODO: RightEnd or RightStart?
+            }
+            int offset = 0;
+            while (offset < textAfter.Length && textAfter[offset] != '\n')
+            {
+                // No words are allowed between the bracket pairs.
+                if (char.IsLetter(textAfter[offset]))
+                {
+                    return;
+                }
+                if (textAfter[offset] == endChar)
+                {
+                    IsBracketTrickSelected = true;
+                    if (ActiveSide == Side.Left)
+                    {
+                        LeftEnd = LeftEnd.GetPositionAtOffset(offset + 1);
+                        MainWindow.LeftPasswordColumn.Selection.Select(LeftStart, LeftEnd);
+                        break;
+                    }
+                    else if (ActiveSide == Side.Right)
+                    {
+                        RightEnd = RightEnd.GetPositionAtOffset(offset + 1);
+                        MainWindow.RightPasswordColumn.Selection.Select(RightStart, RightEnd);
+                        break;
+                    }
+                }
+                offset++;
+            }
         }
 
         /// <summary>
@@ -255,19 +322,19 @@ namespace Fallout_Terminal.View
         }
 
         /// <summary>
-        /// Calculates the offset for positioning the textPointers, from the X and Y coordinates in the class.
+        /// Calculates the offset for positioning the textPointers, from a given x and y position.
         /// </summary>
         /// <param name="column">The column the current selection is in.</param>
         /// <returns></returns>
-        private int CalculateOffset()
+        private int CalculateOffset(int x, int y, Side column)
         {
-            if (ActiveSide == Side.Left)
+            if (column == Side.Left)
             {
-                return (2 + X) + (Y * (TerminalModel.NUMBER_OF_COLUMNS + 1));
+                return (2 + x) + (y * (TerminalModel.NUMBER_OF_COLUMNS + 1));
             }
-            else if (ActiveSide == Side.Right)
+            else if (column == Side.Right)
             {
-                return (2 + X - TerminalModel.NUMBER_OF_COLUMNS) + (Y * (TerminalModel.NUMBER_OF_COLUMNS + 1));
+                return (2 + x - TerminalModel.NUMBER_OF_COLUMNS) + (y * (TerminalModel.NUMBER_OF_COLUMNS + 1));
             }
             return 0;
         }
