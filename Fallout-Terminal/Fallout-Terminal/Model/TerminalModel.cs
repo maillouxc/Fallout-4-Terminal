@@ -70,13 +70,18 @@ namespace Fallout_Terminal.Model
 
         /// <summary>
         /// Takes a string of input text from the user, and determines if it is
-        /// the correct password, an incorrect password, or something else, and in the case
-        /// of correct/incorrect passwords, triggers the appropriate game logic following this information.
+        /// the correct password, or an Incorrect Password.
+        /// Triggers the appropriate game logic following this information.
         /// </summary>
         /// <param name="input">The input string to process.</param>
         public void ProcessInput(String input)
         {
-            if(input.Length == PasswordManager.PasswordLength)
+            // We can check for bracket tricks by their length and first character.
+            if(input.Length > 1 && input.Length != PasswordManager.PasswordLength && !char.IsLetter(input[0]))
+            {
+                OnBracketTrickEntered(input);
+            }
+            else if(input.Length == PasswordManager.PasswordLength)
             {
                 int charsInCommon;
                 charsInCommon = PasswordManager.CheckPassword(input);
@@ -151,7 +156,8 @@ namespace Fallout_Terminal.Model
         private void RemoveDud()
         {
             // TODO: Do not remove dud if no duds remaining.
-            InputColumn.AddLine("Dud Removed.");
+            InputColumn.AddLine(">Dud Removed.");
+            InputColumn.AddLine(">");
             // TODO: Implement.
         }
 
@@ -162,7 +168,8 @@ namespace Fallout_Terminal.Model
         private void ReplenishAttempts()
         {
             AttemptsRemaining = STARTING_ATTEMPTS;
-            InputColumn.AddLine("Tries Reset.");
+            InputColumn.AddLine(">Tries Reset.");
+            InputColumn.AddLine(">");
         }
     }
 }

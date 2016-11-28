@@ -35,6 +35,7 @@ namespace Fallout_Terminal.View
         private Side ActiveSide;
         private bool IsWordCurrentlySelected = false;
         private bool IsBracketTrickSelected = false;
+        private List<string> UsedBracketTricks = new List<string>();
 
         /// <summary>
         /// Creates a standard instance of the SelectionManager class.
@@ -45,6 +46,7 @@ namespace Fallout_Terminal.View
             Y = 0;
             X = 0;
             ActiveSide = Side.Left;
+            
             // TODO: Use event to fix so that first character starts out visibly selected upon each start.
         }
 
@@ -170,6 +172,11 @@ namespace Fallout_Terminal.View
         private void HandleBracketTricks()
         {
             IsBracketTrickSelected = false;
+            // Can't use a bracket trick more than once!
+            if (IsBracketTrickUsed(X, Y))
+            {
+                return;
+            }
             string selection = GetSelection();
             char startChar = selection[0];
             char endChar; // Not the actual endChar, but the needed one to complete the bracket pair.
@@ -194,11 +201,11 @@ namespace Fallout_Terminal.View
             string textAfter;
             if (ActiveSide == Side.Left)
             {
-                textAfter = LeftEnd.GetTextInRun(LogicalDirection.Forward); // TODO: LeftEnd or LeftStart?
+                textAfter = LeftEnd.GetTextInRun(LogicalDirection.Forward);
             }
             else // Assuming it's not null...
             {
-                textAfter = RightEnd.GetTextInRun(LogicalDirection.Forward); // TODO: RightEnd or RightStart?
+                textAfter = RightEnd.GetTextInRun(LogicalDirection.Forward);
             }
             int offset = 0;
             while (offset < textAfter.Length && textAfter[offset] != '\n')
@@ -225,7 +232,7 @@ namespace Fallout_Terminal.View
                     }
                 }
                 offset++;
-            }
+            } 
         }
 
         /// <summary>
@@ -344,6 +351,11 @@ namespace Fallout_Terminal.View
         /// </summary>
         private void SubmitSelection(string selection)
         {
+            if (IsBracketTrickSelected)
+            {
+                UsedBracketTricks.Add(X + "," + Y);
+                MoveSelection();
+            }
             MainWindow.ViewModel.Submit(selection);
         }
 
@@ -388,6 +400,24 @@ namespace Fallout_Terminal.View
         private void UpdateActiveSide()
         {
             ActiveSide = (X < TerminalModel.NUMBER_OF_COLUMNS) ? Side.Left : Side.Right;
+        }
+
+        /// <summary>
+        /// Returns true if the bracket trick has already been used.
+        /// </summary>
+        /// <param name="x">The x coordinate of the proposed bracket trick.</param>
+        /// <param name="y">The y coordinate of the proposed bracket trick.</param>
+        /// <returns></returns>
+        private bool IsBracketTrickUsed(int x, int y)
+        {
+            if (UsedBracketTricks.Contains(x + "," + y))
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
         }
     }
 }
