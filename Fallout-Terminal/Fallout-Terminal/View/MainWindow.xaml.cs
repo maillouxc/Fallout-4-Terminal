@@ -21,7 +21,7 @@ namespace Fallout_Terminal
     {
         public TerminalViewModel ViewModel;
 
-        internal SoundManager SoundManager;
+        internal SoundPlayer SoundManager;
 
         private SelectionManager SelectionManager;
 
@@ -36,7 +36,7 @@ namespace Fallout_Terminal
             // It's best to wait until stuff is fully loaded before manipulating it.
             // Not doing so can cause some obscure bugs.
             ViewModel = FindResource("ViewModel") as TerminalViewModel;
-            SoundManager = new SoundManager();
+            SoundManager = new SoundPlayer();
             SelectionManager = new View.SelectionManager(this);
             // Using the "preview" events here allows us to detect the arrow key presses, which we otherwise can't.
             LeftPasswordColumn.PreviewKeyDown += new KeyEventHandler(SelectionManager.OnKeyDown);
@@ -52,13 +52,13 @@ namespace Fallout_Terminal
         {
             if(ViewModel.PowerIsOn)
             {
-                SoundManager.PlaySound(@"..\..\Resources\Sounds\powerOff.wav");
+                SoundPlayer.PlaySound(@"..\..\Resources\Sounds\powerOff.wav");
                 ViewModel.PowerOff();
             }
             else
             {
                 ViewModel.PowerOn();
-                SoundManager.PlaySound(@"..\..\Resources\Sounds\powerOn.wav");
+                SoundPlayer.PlaySound(@"..\..\Resources\Sounds\powerOn.wav");
                 //TODO: Think about this some more. Is this the right way to do this?
             }
         }
@@ -71,7 +71,7 @@ namespace Fallout_Terminal
             if (SoundManager != null)
             {
                 await Task.Delay(TerminalViewModel.DELAY_TIME);
-                SoundManager.PlayCharacterDisplaySound();
+                SoundPlayer.PlayCharacterDisplaySound();
             }
         }
 
@@ -83,7 +83,7 @@ namespace Fallout_Terminal
             if (SoundManager != null)
             {
                 await Task.Delay(TerminalViewModel.DELAY_TIME);
-                SoundManager.PlayCharacterDisplaySound();
+                SoundPlayer.PlayCharacterDisplaySound();
             }
         }
 
@@ -95,7 +95,7 @@ namespace Fallout_Terminal
             if (SoundManager != null)
             {
                 await Task.Delay(TerminalViewModel.DELAY_TIME);
-                SoundManager.PlayCharacterDisplaySound();
+                SoundPlayer.PlayCharacterDisplaySound();
             }
         }
 
@@ -107,7 +107,7 @@ namespace Fallout_Terminal
             if (SoundManager != null)
             {
                 await Task.Delay(TerminalViewModel.DELAY_TIME);
-                SoundManager.PlayCharacterDisplaySound();
+                SoundPlayer.PlayCharacterDisplaySound();
             }
         }
 
@@ -119,7 +119,7 @@ namespace Fallout_Terminal
             if (SoundManager != null)
             {
                 await Task.Delay(TerminalViewModel.DELAY_TIME);
-                SoundManager.PlayCharacterDisplaySound();
+                SoundPlayer.PlayCharacterDisplaySound();
             }
         }
 
@@ -131,7 +131,7 @@ namespace Fallout_Terminal
             if (SoundManager != null)
             {
                 await Task.Delay(TerminalViewModel.DELAY_TIME);
-                SoundManager.PlayCharacterDisplaySound();
+                SoundPlayer.PlayCharacterDisplaySound();
             }
         }
     }

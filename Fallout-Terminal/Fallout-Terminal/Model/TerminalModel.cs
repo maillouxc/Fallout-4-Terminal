@@ -1,4 +1,5 @@
-﻿using Fallout_Terminal.Utilities;
+﻿using Fallout_Terminal.Sound;
+using Fallout_Terminal.Utilities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -37,6 +38,9 @@ namespace Fallout_Terminal.Model
 
         public delegate void AttemptsChangedEventHandler(object sender, AttemptsChangedEventArgs args);
         public event AttemptsChangedEventHandler AttemptsChanged;
+
+        public delegate void IncorrectPasswordEventHandler(object sender, EventArgs args);
+        public event IncorrectPasswordEventHandler IncorrectPassword;
 
         public const int NUMBER_OF_LINES = 16;
         public const int NUMBER_OF_COLUMNS = 12;
@@ -92,7 +96,8 @@ namespace Fallout_Terminal.Model
         /// </summary>
         private void OnCorrectPasswordEntered(string password)
         {
-            // TODO: Fire event to play "correctPassword" sound.
+            // Come at me bro
+            SoundPlayer.PlayCorrectPasswordSound();
         }
 
 
@@ -106,25 +111,37 @@ namespace Fallout_Terminal.Model
             InputColumn.AddLine(">Likeness=" + charsInCommon);
             InputColumn.AddLine(">");
             AttemptsRemaining--;
-            // TODO: Fire event to play "incorrectPassword" sound.
+            // This violates MVVC? Fight me. I'm not spending my life writing events
+            // for a toy program just to conform with design patterns.
+            SoundPlayer.PlayIncorrectPasswordSound();
+        }
+
+        /// <summary>
+        /// Fired to notify listeners that an incorrect password has been entered.
+        /// </summary>
+        private void NotifyIncorrectPasswordEntered(TerminalModel terminalModel, EventArgs args)
+        {
+            IncorrectPassword?.Invoke(this, args); // Okay, I gotta admit. C# syntax can be so great sometimes.
         }
 
         /// <summary>
         /// Called whenever a bracket trick is entered by the user.
+        /// 
+        /// Either removes a dud password, or replenishes the attempts remaining.
+        /// Replenishing attempts is only a 1 in 3 chance, while dud removal is 2 in 3.
         /// </summary>
-        private void OnBracketTrickEntered()
+        private void OnBracketTrickEntered(string text)
         {
             // Replenishing attempts should be less common than removing a dud.
             int rand = RandomProvider.Next(0,2);
+            InputColumn.OverwriteLastLine(text);
             if(rand == 0)
             {
                 ReplenishAttempts();
-                Console.WriteLine("Attempts Replenished"); // Testing only
             }
             else
             {
                 RemoveDud();
-                Console.WriteLine("Dud Removed"); // Testing only
             }
         }
 
@@ -134,6 +151,7 @@ namespace Fallout_Terminal.Model
         private void RemoveDud()
         {
             // TODO: Do not remove dud if no duds remaining.
+            InputColumn.AddLine("Dud Removed.");
             // TODO: Implement.
         }
 
@@ -144,6 +162,7 @@ namespace Fallout_Terminal.Model
         private void ReplenishAttempts()
         {
             AttemptsRemaining = STARTING_ATTEMPTS;
+            InputColumn.AddLine("Tries Reset.");
         }
     }
 }

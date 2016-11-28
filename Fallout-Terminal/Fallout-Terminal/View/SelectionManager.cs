@@ -1,6 +1,7 @@
 ﻿using Fallout_Terminal.Model;
 using Fallout_Terminal.Utilities;
 using Fallout_Terminal.ViewModel;
+using Fallout_Terminal.Sound;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -69,6 +70,7 @@ namespace Fallout_Terminal.View
                     break;
                 case (Key.Enter):
                     SubmitSelection(GetSelection());
+                    SoundPlayer.PlayEnterKeySound();
                     break;
             }
         }
@@ -276,7 +278,6 @@ namespace Fallout_Terminal.View
         private void SubmitSelection(string selection)
         {
             MainWindow.ViewModel.Submit(selection);
-            MainWindow.SoundManager.PlayEnterKeySound();
         }
 
         /// <summary>
@@ -308,7 +309,7 @@ namespace Fallout_Terminal.View
             for (int i = 0; i < newSelection.Length; i++)
             {
                 await Task.Delay(30);
-                MainWindow.SoundManager.PlayTypingSound();
+                SoundPlayer.PlayTypingSound();
             }
             MainWindow.ViewModel.SelectionChanged(newSelection);
         }
