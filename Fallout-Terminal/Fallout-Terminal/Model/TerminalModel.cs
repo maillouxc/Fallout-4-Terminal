@@ -59,12 +59,9 @@ namespace Fallout_Terminal.Model
         /// Dispatches the AttemptsChangedEvent with information about how many attempts remain.
         /// </summary>
         /// <param name="args"></param>
-        public void NotifyAttemptsChanged(AttemptsChangedEventArgs args)
+        private void NotifyAttemptsChanged(AttemptsChangedEventArgs args)
         {
-            if (AttemptsChanged != null)
-            {
-                AttemptsChanged(this, args);
-            }
+            AttemptsChanged?.Invoke(this, args);
         }
 
         /// <summary>
@@ -81,11 +78,11 @@ namespace Fallout_Terminal.Model
                 charsInCommon = PasswordManager.CheckPassword(input);
                 if (charsInCommon == PasswordManager.PasswordLength)
                 {
-                    OnCorrectPasswordEntered();
+                    OnCorrectPasswordEntered(input);
                 }
                 else
                 {
-                    OnIncorrectPasswordEntered(charsInCommon);
+                    OnIncorrectPasswordEntered(charsInCommon, input);
                 }
             }
         }
@@ -93,7 +90,7 @@ namespace Fallout_Terminal.Model
         /// <summary>
         /// Called whenever a correct password is entered.
         /// </summary>
-        private void OnCorrectPasswordEntered()
+        private void OnCorrectPasswordEntered(string password)
         {
             // TODO: Fire event to play "correctPassword" sound.
         }
@@ -102,10 +99,12 @@ namespace Fallout_Terminal.Model
         /// <summary>
         /// Called whenever an incorrect password is entered.
         /// </summary>
-        private void OnIncorrectPasswordEntered(int charsInCommon)
+        private void OnIncorrectPasswordEntered(int charsInCommon, string password)
         {
-            InputColumn.AddLine(charsInCommon.ToString());
-            // TODO: Does this actually fire the event? We need to test this.
+            InputColumn.OverwriteLastLine(">" + password);
+            InputColumn.AddLine(">Entry denied.");
+            InputColumn.AddLine(">Likeness=" + charsInCommon);
+            InputColumn.AddLine(">");
             AttemptsRemaining--;
             // TODO: Fire event to play "incorrectPassword" sound.
         }
