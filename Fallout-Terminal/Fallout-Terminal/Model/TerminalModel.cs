@@ -138,8 +138,8 @@ namespace Fallout_Terminal.Model
         private void OnBracketTrickEntered(string text)
         {
             // Replenishing attempts should be less common than removing a dud.
-            int rand = RandomProvider.Next(0,2);
-            InputColumn.OverwriteLastLine(text);
+            int rand = RandomProvider.Next(0,5);
+            InputColumn.OverwriteLastLine(">" + text);
             if(rand == 0)
             {
                 ReplenishAttempts();
