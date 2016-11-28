@@ -9,6 +9,8 @@ using System.Windows.Input;
 using Fallout_Terminal.ViewModel;
 using Fallout_Terminal.Sound;
 using Fallout_Terminal.View;
+using System.Windows.Media;
+using System.Threading.Tasks;
 
 namespace Fallout_Terminal
 {
@@ -20,6 +22,7 @@ namespace Fallout_Terminal
         public TerminalViewModel ViewModel;
 
         internal SoundManager SoundManager;
+
         private SelectionManager SelectionManager;
 
         /// <summary>
@@ -35,10 +38,16 @@ namespace Fallout_Terminal
             ViewModel = FindResource("ViewModel") as TerminalViewModel;
             SoundManager = new SoundManager();
             SelectionManager = new View.SelectionManager(this);
+            // Using the "preview" events here allows us to detect the arrow key presses, which we otherwise can't.
             LeftPasswordColumn.PreviewKeyDown += new KeyEventHandler(SelectionManager.OnKeyDown);
             RightPasswordColumn.PreviewKeyDown += new KeyEventHandler(SelectionManager.OnKeyDown);
         }
 
+        /// <summary>
+        /// Fired whenever the powerButton is clicked.
+        /// 
+        /// Plays a sound and tells the viewModel to enable the power.
+        /// </summary>
         private void powerButton_Click(object sender, RoutedEventArgs e)
         {
             if(ViewModel.PowerIsOn)
@@ -52,13 +61,78 @@ namespace Fallout_Terminal
                 SoundManager.PlaySound(@"..\..\Resources\Sounds\powerOn.wav");
                 //TODO: Think about this some more. Is this the right way to do this?
             }
-
         }
 
-        private void TerminalScreen_TextChanged(object sender, TextChangedEventArgs e)
+        /// <summary>
+        /// Fired whenever the text in the LeftPasswordColumn changes.
+        /// </summary>
+        private async void LeftPasswordColumn_TextChanged(object sender, TextChangedEventArgs e)
         {
-            // TODO Determine what logic, if any, needs to go here.
-            // Possibly sound logic?
+            if (SoundManager != null)
+            {
+                await Task.Delay(TerminalViewModel.DELAY_TIME);
+                SoundManager.PlayCharacterDisplaySound();
+            }
+        }
+
+        /// <summary>
+        /// Fired whenever the text in the RightPasswordColumn changes.
+        /// </summary>
+        private async void RightPasswordColumn_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            if (SoundManager != null)
+            {
+                await Task.Delay(TerminalViewModel.DELAY_TIME);
+                SoundManager.PlayCharacterDisplaySound();
+            }
+        }
+
+        /// <summary>
+        /// Fired whenever the text in the left hex column is changed.
+        /// </summary>
+        private async void LeftHexColumn_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            if (SoundManager != null)
+            {
+                await Task.Delay(TerminalViewModel.DELAY_TIME);
+                SoundManager.PlayCharacterDisplaySound();
+            }
+        }
+
+        /// <summary>
+        /// Fired whenever the text in the right hex column has changed.
+        /// </summary>
+        private async void RightHexColumn_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            if (SoundManager != null)
+            {
+                await Task.Delay(TerminalViewModel.DELAY_TIME);
+                SoundManager.PlayCharacterDisplaySound();
+            }
+        }
+
+        /// <summary>
+        /// Fired whenever the headertext changes.
+        /// </summary>
+        private async void HeaderText_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            if (SoundManager != null)
+            {
+                await Task.Delay(TerminalViewModel.DELAY_TIME);
+                SoundManager.PlayCharacterDisplaySound();
+            }
+        }
+
+        /// <summary>
+        /// Fired whenever the attempts remaining text is changed.
+        /// </summary>
+        private async void AttemptsText_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            if (SoundManager != null)
+            {
+                await Task.Delay(TerminalViewModel.DELAY_TIME);
+                SoundManager.PlayCharacterDisplaySound();
+            }
         }
     }
 }

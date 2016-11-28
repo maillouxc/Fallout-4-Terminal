@@ -23,8 +23,8 @@ namespace Fallout_Terminal.Model
         private const int MAXIMUM_NUMBER_OF_PASSWORDS = 12;
 
         public List<string> PotentialPasswords;
+        public int PasswordLength;
 
-        private int PasswordLength;
         private string CorrectPassword;
         private int NumberOfPasswordsToGenerate;
         private PasswordGenerator PasswordGenerator;
@@ -71,6 +71,7 @@ namespace Fallout_Terminal.Model
         /// </summary>
         private int GetNumberOfCorrectChars(string passwordToCheck)
         {
+            passwordToCheck = passwordToCheck.ToLower();
             int numberCorrect = 0;
             for(int i = 0; i < CorrectPassword.Length; i++)
             {

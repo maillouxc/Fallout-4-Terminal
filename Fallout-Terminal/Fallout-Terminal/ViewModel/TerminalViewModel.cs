@@ -30,9 +30,10 @@ namespace Fallout_Terminal.ViewModel
 
         public event PropertyChangedEventHandler PropertyChanged;
 
+        public const int DELAY_TIME = 25; // Milliseconds.
+
         private const string ROBCO_TEXT = "Welcome to ROBCO Industries (TM) Termlink " + "\u000D" + "\u000A" + "Password Required";
         private const string DEFAULT_ATTEMPTS_TEXT = "Attempts Remaining: \u25AE \u25AE \u25AE \u25AE";
-        private const int DELAY_TIME = 3; // Milliseconds.
 
         private TerminalModel TerminalModel;
         private bool ScreenIsReady = false;
@@ -57,6 +58,7 @@ namespace Fallout_Terminal.ViewModel
             await InitializeScreen();
             ScreenIsReady = true;
             TerminalModel.AttemptsChanged += AttemptsChanged;
+            TerminalModel.InputColumn.InputColumnChanged += this.InputColumnChanged;
         }
 
         /// <summary>
@@ -278,6 +280,7 @@ namespace Fallout_Terminal.ViewModel
         /// </summary>
         public void Submit(string input)
         {
+            TerminalModel.InputColumn.OverwriteLastLine("");
             TerminalModel.ProcessInput(input);
         }
 
@@ -288,13 +291,30 @@ namespace Fallout_Terminal.ViewModel
         /// </summary>
         public async void SelectionChanged(string newSelection)
         {
-            InputColumnCurrentlyDisplayed = ">";
+            InputColumnCurrentlyDisplayed = TerminalModel.InputColumn.ToString();
+            TerminalModel.InputColumn.OverwriteLastLine(">");
             foreach (char character in newSelection)
             {
                 await Task.Delay(DELAY_TIME);
-                InputColumnCurrentlyDisplayed += character;
+                TerminalModel.InputColumn.AppendToLastLine(character.ToString());
                 Notify("InputColumnCurrentlyDisplayed");
             }
+        }
+
+        /// <summary>
+        /// Called whenever the input column is changed, via events.
+        /// Updates the input column displayed with the new contents.
+        /// </summary>
+        public void InputColumnChanged(object sender, EventArgs args)
+        {
+            
+            StringBuilder b = new StringBuilder();
+            foreach (string s in TerminalModel.InputColumn.Contents)
+            {
+                b.AppendLine(s);
+            }
+            InputColumnCurrentlyDisplayed = b.ToString();
+            Notify("InputColumnCurrentlyDisplayed");
         }
     }
 }

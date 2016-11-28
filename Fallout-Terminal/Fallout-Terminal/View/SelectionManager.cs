@@ -276,6 +276,7 @@ namespace Fallout_Terminal.View
         private void SubmitSelection(string selection)
         {
             MainWindow.ViewModel.Submit(selection);
+            MainWindow.SoundManager.PlayEnterKeySound();
         }
 
         /// <summary>
@@ -301,10 +302,14 @@ namespace Fallout_Terminal.View
         /// Notifies the viewModel that the current user selection is changed, so that the view model can deal with it as it wishes.
         /// Also, since we are already in the View, we might as well play the delightful clacky keyboard sounds while here.
         /// </summary>
-        private void NotifySelectionChanged()
+        async private void NotifySelectionChanged()
         {
             string newSelection = GetSelection();
-            MainWindow.SoundManager.PlayTypingSound();
+            for (int i = 0; i < newSelection.Length; i++)
+            {
+                await Task.Delay(30);
+                MainWindow.SoundManager.PlayTypingSound();
+            }
             MainWindow.ViewModel.SelectionChanged(newSelection);
         }
 

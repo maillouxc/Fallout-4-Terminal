@@ -38,13 +38,15 @@ namespace Fallout_Terminal.Sound
         /// </summary>
         public void PlayTypingSound()
         {
-            int randomInt = RandomProvider.Next(1, 11);
+            int randomInt = RandomProvider.Next(2, 11);
             string filePath = "";
             switch (randomInt)
             {
+                /*
                 case 1:
                     filePath = @"..\..\Resources\Sounds\typing1.wav";
                     break;
+                */
                 case 2:
                     filePath = @"..\..\Resources\Sounds\typing2.wav";
                     break;
@@ -76,6 +78,22 @@ namespace Fallout_Terminal.Sound
                     filePath = @"..\..\Resources\Sounds\typing11.wav";
                     break;
             }
+            PlaySound(filePath);
+        }
+
+        /// <summary>
+        /// Plays that dull "click" sound that is heard while each character on the screen is printed
+        /// for the first time.
+        /// </summary>
+        public void PlayCharacterDisplaySound()
+        {
+            string filePath = @"..\..\Resources\Sounds\typing6.wav";
+            PlaySound(filePath);
+        }
+
+        public void PlayEnterKeySound()
+        {
+            string filePath = @"..\..\Resources\Sounds\enterKey.wav";
             PlaySound(filePath);
         }
     }
