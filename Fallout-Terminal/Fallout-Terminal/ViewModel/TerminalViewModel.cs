@@ -32,7 +32,7 @@ namespace Fallout_Terminal.ViewModel
         public delegate void MemoryDumpContentsChangedHandler(object sender, EventArgs args);
         public event MemoryDumpContentsChangedHandler MemoryDumpContentsChanged;
 
-        public const int DELAY_TIME = 0; // Milliseconds.
+        public const int DELAY_TIME = 20; // Milliseconds.
 
         private const string ROBCO_TEXT = "Welcome to ROBCO Industries (TM) Termlink " + "\u000D" + "\u000A" + "Password Required";
         private const string DEFAULT_ATTEMPTS_TEXT = "Attempts Remaining: \u25AE \u25AE \u25AE \u25AE";
