@@ -81,7 +81,7 @@ namespace Fallout_Terminal.Model
             else if(input.Length == PasswordManager.PasswordLength)
             {
                 int charsInCommon;
-                charsInCommon = PasswordManager.CheckPassword(input);
+                charsInCommon = PasswordManager.GetNumberOfCorrectChars(input);
                 if (charsInCommon == PasswordManager.PasswordLength)
                 {
                     OnCorrectPasswordEntered(input);
@@ -150,7 +150,7 @@ namespace Fallout_Terminal.Model
                 TryAgainPoint:
                     int rand = RandomProvider.Next(0, potentialPasswordsRemaining - 1);
                     string passwordToRemove = PasswordManager.PotentialPasswords.ElementAt(rand);
-                    if (passwordToRemove.Length == PasswordManager.CheckPassword(passwordToRemove))
+                    if (passwordToRemove.Length == PasswordManager.GetNumberOfCorrectChars(passwordToRemove))
                     {
                         // If this is actually the correct password, we can't remove it!
                         goto TryAgainPoint; // Fight me bro.

@@ -11,9 +11,7 @@ namespace Fallout_Terminal.Model
     /// </summary>
     public class PasswordManager
     {
-        // TODO: Fix literally everything in this bullshit class. I don't think I ever finished it in the first place, I just moved on...
         // TODO: Determine programmatically, removing these constants.
-        private const int DEFAULT_NUMBER_OF_PASSWORDS = 8;
         private const int DEFAULT_PASSWORD_LENGTH = 11;
         private const int DEFAULT_LETTERS_IN_COMMON = 30;
 
@@ -29,13 +27,15 @@ namespace Fallout_Terminal.Model
         private int NumberOfPasswordsToGenerate;
         private PasswordGenerator PasswordGenerator;
 
+        // TODO: Should we use LINQ to simplify some of the password generation?
+
         /// <summary>
         /// Creates a new PasswordManager object. Determines the length and number of passwords to generate, 
         /// and generates the passwords via initializing a PasswordGenerator object, 
         /// </summary>
         public PasswordManager()
         {
-            NumberOfPasswordsToGenerate = DEFAULT_NUMBER_OF_PASSWORDS;
+            NumberOfPasswordsToGenerate = RandomProvider.Next(MINIMUM_NUMBER_OF_PASSWORDS, MAXIMUM_NUMBER_OF_PASSWORDS);
             PasswordLength = DEFAULT_PASSWORD_LENGTH;
             PasswordGenerator = new PasswordGenerator();
             PotentialPasswords = PasswordGenerator.GeneratePasswords(NumberOfPasswordsToGenerate, PasswordLength);
@@ -45,31 +45,12 @@ namespace Fallout_Terminal.Model
             {
                 PotentialPasswords[password] = PotentialPasswords[password].ToUpper();
             }
-            Console.WriteLine("Correct Password: " + CorrectPassword); // TESTING
         }
 
         /// <summary>
-        /// Checks the input password to see if it is correct. If the password is correct, returns -1,
-        /// else, returns the number of characters in common with the passwordToCheck argument provided.
+        /// Returns the number of chars that the passed string has in common with the correct password.
         /// </summary>
-        public int CheckPassword(string passwordToCheck)
-        {
-            if(passwordToCheck == CorrectPassword)
-            {
-                return -1;
-            }
-            else
-            {
-                int numberOfCorrectChars;
-                numberOfCorrectChars = GetNumberOfCorrectChars(passwordToCheck);
-                return numberOfCorrectChars;
-            }
-        }
-
-        /// <summary>
-        /// Returns the number of characters in common with the correct password. Should only be called by the CheckPassword method.
-        /// </summary>
-        private int GetNumberOfCorrectChars(string passwordToCheck)
+        public int GetNumberOfCorrectChars(string passwordToCheck)
         {
             passwordToCheck = passwordToCheck.ToLower();
             int numberCorrect = 0;

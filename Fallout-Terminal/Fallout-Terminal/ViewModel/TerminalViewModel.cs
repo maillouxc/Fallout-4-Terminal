@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Fallout_Terminal.Model;
@@ -8,19 +7,13 @@ using System.ComponentModel;
 
 namespace Fallout_Terminal.ViewModel
 {
+    /// <summary>
+    /// This class handles everything that is related to linking the model and the view.
+    /// </summary>
     public class TerminalViewModel : INotifyPropertyChanged
     {
-        public string RobcoTextCurrentlyDisplayed
-        {
-            get;
-            private set;
-        }
-        public string AttemptsTextCurrentlyDisplayed
-        {
-            // TODO: Link in to an event somewhere in the model to stay updated on the number of attempts remaining.
-            get;
-            private set;
-        }
+        public string RobcoTextCurrentlyDisplayed { get; private set; }
+        public string AttemptsTextCurrentlyDisplayed{ get; private set; }
         public string LeftHexCurrentlyDisplayed { get; private set; }
         public string RightHexCurrentlyDisplayed { get; private set; }
         public string LeftMemoryDumpCurrentlyDisplayed { get; private set; }
