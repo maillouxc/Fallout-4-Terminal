@@ -46,7 +46,7 @@ namespace Fallout_Terminal.View
             Y = 0;
             X = 0;
             ActiveSide = Side.Left;
-            
+            MainWindow.ViewModel.MemoryDumpContentsChanged += OnMemoryDumpContentsChanged;
             // TODO: Use event to fix so that first character starts out visibly selected upon each start.
         }
 
@@ -418,6 +418,16 @@ namespace Fallout_Terminal.View
             {
                 return false;
             }
+        }
+
+        /// <summary>
+        /// Called when memory dump contents are changed.
+        /// This method is only needed to fix that nasty selection bug which causes the entire 
+        /// section to be highlighted upon any changes.
+        /// </summary>
+        private void OnMemoryDumpContentsChanged(object sender, EventArgs args)
+        {
+            MoveSelection();
         }
     }
 }

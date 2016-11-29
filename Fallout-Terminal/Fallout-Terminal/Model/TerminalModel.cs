@@ -39,9 +39,6 @@ namespace Fallout_Terminal.Model
         public delegate void AttemptsChangedEventHandler(object sender, AttemptsChangedEventArgs args);
         public event AttemptsChangedEventHandler AttemptsChanged;
 
-        public delegate void IncorrectPasswordEventHandler(object sender, EventArgs args);
-        public event IncorrectPasswordEventHandler IncorrectPassword;
-
         public const int NUMBER_OF_LINES = 16;
         public const int NUMBER_OF_COLUMNS = 12;
 
@@ -122,14 +119,6 @@ namespace Fallout_Terminal.Model
         }
 
         /// <summary>
-        /// Fired to notify listeners that an incorrect password has been entered.
-        /// </summary>
-        private void NotifyIncorrectPasswordEntered(TerminalModel terminalModel, EventArgs args)
-        {
-            IncorrectPassword?.Invoke(this, args); // Okay, I gotta admit. C# syntax can be so great sometimes.
-        }
-
-        /// <summary>
         /// Called whenever a bracket trick is entered by the user.
         /// 
         /// Either removes a dud password, or replenishes the attempts remaining.
@@ -155,10 +144,22 @@ namespace Fallout_Terminal.Model
         /// </summary>
         private void RemoveDud()
         {
-            // TODO: Do not remove dud if no duds remaining.
+            int potentialPasswordsRemaining = PasswordManager.PotentialPasswords.Count;
+            if (PasswordManager.PotentialPasswords.Count > 1)
+            {
+                TryAgainPoint:
+                    int rand = RandomProvider.Next(0, potentialPasswordsRemaining - 1);
+                    string passwordToRemove = PasswordManager.PotentialPasswords.ElementAt(rand);
+                    if (passwordToRemove.Length == PasswordManager.CheckPassword(passwordToRemove))
+                    {
+                        // If this is actually the correct password, we can't remove it!
+                        goto TryAgainPoint; // Fight me bro.
+                    }
+                PasswordManager.PotentialPasswords.RemoveAt(rand);
+                MemoryDump.Remove(passwordToRemove);
+            }
             InputColumn.AddLine(">Dud Removed.");
             InputColumn.AddLine(">");
-            // TODO: Implement.
         }
 
         /// <summary>

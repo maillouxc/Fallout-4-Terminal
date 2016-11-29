@@ -29,8 +29,10 @@ namespace Fallout_Terminal.ViewModel
         public bool PowerIsOn { get; private set; }
 
         public event PropertyChangedEventHandler PropertyChanged;
+        public delegate void MemoryDumpContentsChangedHandler(object sender, EventArgs args);
+        public event MemoryDumpContentsChangedHandler MemoryDumpContentsChanged;
 
-        public const int DELAY_TIME = 25; // Milliseconds.
+        public const int DELAY_TIME = 0; // Milliseconds.
 
         private const string ROBCO_TEXT = "Welcome to ROBCO Industries (TM) Termlink " + "\u000D" + "\u000A" + "Password Required";
         private const string DEFAULT_ATTEMPTS_TEXT = "Attempts Remaining: \u25AE \u25AE \u25AE \u25AE";
@@ -59,6 +61,7 @@ namespace Fallout_Terminal.ViewModel
             ScreenIsReady = true;
             TerminalModel.AttemptsChanged += AttemptsChanged;
             TerminalModel.InputColumn.InputColumnChanged += this.InputColumnChanged;
+            TerminalModel.MemoryDump.OnContentsChanged += OnMemoryDumpContentsChanged;
         }
 
         /// <summary>
@@ -315,6 +318,69 @@ namespace Fallout_Terminal.ViewModel
             }
             InputColumnCurrentlyDisplayed = b.ToString();
             Notify("InputColumnCurrentlyDisplayed");
+        }
+
+        /// <summary>
+        /// Refreshes the current memory dump contents displayed on the screen when they change.
+        /// </summary>
+        private void OnMemoryDumpContentsChanged(object sender, EventArgs args)
+        {
+            // Most of the code here is copypastad from the initialize method in this class.
+            bool isLeftColumn = true;
+            bool finished = false;
+            int lineNumber = 0;
+            LeftMemoryDumpCurrentlyDisplayed = "";
+            RightMemoryDumpCurrentlyDisplayed = "";
+            while (!finished)
+            {
+                string contents = TerminalModel.MemoryDump.Contents;
+                for (int character = 0; character < MemoryDump.LINE_LENGTH; character++)
+                {
+                    if (isLeftColumn)
+                    {
+                        int offset = lineNumber * MemoryDump.LINE_LENGTH;
+                        LeftMemoryDumpCurrentlyDisplayed += contents[character + offset];
+                    }
+                    else
+                    {
+                        int offset = (lineNumber * MemoryDump.LINE_LENGTH) + (contents.Length / 2);
+                        RightMemoryDumpCurrentlyDisplayed += contents[character + offset];
+                    }
+                    if (character == MemoryDump.LINE_LENGTH - 1)
+                    {
+                        if (isLeftColumn)
+                        {
+                            LeftMemoryDumpCurrentlyDisplayed += ('\n');
+                        }
+                        else
+                        {
+                            RightMemoryDumpCurrentlyDisplayed += ('\n');
+                        }
+                    }
+                }
+                if (!isLeftColumn)
+                {
+                    lineNumber++;
+                }
+                if (lineNumber == TerminalModel.NUMBER_OF_LINES)
+                {
+                    finished = true;
+                }
+                isLeftColumn = !isLeftColumn;
+            }
+            Notify("LeftMemoryDumpCurrentlyDisplayed");
+            Notify("RightMemoryDumpCurrentlyDisplayed");
+            NotifyMemoryContentsChanged();
+        }
+
+        /// <summary>
+        /// Called when the contents of the memory dump change. There is a nearly identical event handler in the model, 
+        /// but I need this event to speak to the view, so that the selectionManager can see it and fix that pesky 
+        /// selection bug that occurs when we replace the duds with dots.
+        /// </summary>
+        private void NotifyMemoryContentsChanged()
+        {
+            MemoryDumpContentsChanged?.Invoke(this, new EventArgs());
         }
     }
 }
