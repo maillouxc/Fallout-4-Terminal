@@ -12,7 +12,6 @@ namespace Fallout_Terminal.Model
     public class PasswordManager
     {
         // TODO: Determine programmatically, removing these constants.
-        private const int DEFAULT_PASSWORD_LENGTH = 11;
         private const int DEFAULT_LETTERS_IN_COMMON = 30;
 
         private const int MAX_PASSWORD_LENGTH = 11;
@@ -36,7 +35,7 @@ namespace Fallout_Terminal.Model
         public PasswordManager()
         {
             NumberOfPasswordsToGenerate = RandomProvider.Next(MINIMUM_NUMBER_OF_PASSWORDS, MAXIMUM_NUMBER_OF_PASSWORDS);
-            PasswordLength = DEFAULT_PASSWORD_LENGTH;
+            PasswordLength = RandomProvider.Next(MIN_PASSWORD_LENGTH, MAX_PASSWORD_LENGTH);
             PasswordGenerator = new PasswordGenerator();
             PotentialPasswords = PasswordGenerator.GeneratePasswords(NumberOfPasswordsToGenerate, PasswordLength);
             ChooseACorrectPassword();
