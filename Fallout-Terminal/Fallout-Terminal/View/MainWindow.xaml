@@ -189,6 +189,7 @@
                        AutoWordSelection="False" 
                        IsUndoEnabled="False"
                        TextChanged="LeftPasswordColumn_TextChanged"
+                       Focusable="False"
                        >
                 <!-- Set to 18000 to achieve the effect of disabling WordWrap, which WPF doesn't actually let us do. -->
                 <FlowDocument PageWidth="18000">
@@ -220,6 +221,7 @@
                        AutoWordSelection="False" 
                        IsUndoEnabled="False"
                        TextChanged="RightPasswordColumn_TextChanged"
+                       Focusable="False"
                        >
                 <!-- Set to 18000 to achieve the effect of disabling WordWrap, which WPF doesn't actually let us do. -->
                 <FlowDocument PageWidth="18000">

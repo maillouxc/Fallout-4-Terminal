@@ -9,6 +9,15 @@ namespace Fallout_Terminal.ViewModel
 {
     /// <summary>
     /// This class handles everything that is related to linking the model and the view.
+    /// 
+    /// It stores the screen state, handles initializatoin, manages the powerstate, and fires several events
+    /// related to these things.
+    /// 
+    /// Normally this would be too much responsibility for a single class, but in this case, the scope of the 
+    /// program is known to be small and will not change, so this isn't a situation where this will eventually
+    /// become some kind of god class if not refactored. I don't have the time at the moment to extract the
+    /// power state management or initialiaztion handling to another class right now. Just pretend that this 
+    /// class has a single responsibility, okay? Please?
     /// </summary>
     public class TerminalViewModel : INotifyPropertyChanged
     {
@@ -24,6 +33,10 @@ namespace Fallout_Terminal.ViewModel
         public event PropertyChangedEventHandler PropertyChanged;
         public delegate void MemoryDumpContentsChangedHandler(object sender, EventArgs args);
         public event MemoryDumpContentsChangedHandler MemoryDumpContentsChanged;
+        public delegate void TerminalReadyHandler(object sender, EventArgs args);
+        public event TerminalReadyHandler TerminalReady;
+        public delegate void PowerOffEventHandler(object sender, EventArgs args);
+        public event PowerOffEventHandler OnPowerOff;
 
         public const int DELAY_TIME = 20; // Milliseconds.
 
@@ -31,7 +44,7 @@ namespace Fallout_Terminal.ViewModel
         private const string DEFAULT_ATTEMPTS_TEXT = "Attempts Remaining: \u25AE \u25AE \u25AE \u25AE";
 
         private TerminalModel TerminalModel;
-        private bool ScreenIsReady = false;
+        private bool InitializationComplete = false;
 
         /// <summary>
         /// Creates an instance of the TerminalModel class.
@@ -44,40 +57,52 @@ namespace Fallout_Terminal.ViewModel
 
         /// <summary>
         /// Powers on the terminal and initialzes the game and the screen.
+        /// Notifies the program when ready. Can be interrupted by setting power to off.
         /// </summary>
         public async void PowerOn()
         {
-            ScreenIsReady = false;
             PowerIsOn = true;
             TerminalModel = new TerminalModel();
+            InitializationComplete = false;
             await InitializeScreen();
-            ScreenIsReady = true;
-            TerminalModel.AttemptsChanged += AttemptsChanged;
-            TerminalModel.InputColumn.InputColumnChanged += this.InputColumnChanged;
-            TerminalModel.MemoryDump.OnContentsChanged += OnMemoryDumpContentsChanged;
+            InitializationComplete = true;
+            // This check is needed if the power has been turned off while booting.
+            if (TerminalModel != null)
+            {
+                TerminalModel.AttemptsChanged += AttemptsChanged;
+                TerminalModel.InputColumn.InputColumnChanged += this.InputColumnChanged;
+                TerminalModel.MemoryDump.OnContentsChanged += OnMemoryDumpContentsChanged;
+                if (PowerIsOn)
+                {
+                    NotifyGameReady();
+                }
+            }
         }
 
         /// <summary>
-        /// Toggles the power on state of the terminal. When the terminal is off, the game ended. If turned on again, a new game will start.
+        /// Turns the terminal power off. When the terminal is turned off, the game ends. 
+        /// If turned on again, a new game will start.
+        /// 
+        /// Can now safely be called even while the terminal is still booting.
         /// </summary>
-        public void PowerOff()
+        public async Task PowerOff()
         {
-            // TODO: Implement Power off while booting.
-            if(!ScreenIsReady)
-            {
-                return;
-            }
+            NotifyOnPowerOff();
             PowerIsOn = false;
             ClearScreen();
-            // Garbage collect the game state.
+            // Garbage collect the game state, once intialization is done with it.
+            while(!InitializationComplete)
+            {
+                await Task.Delay(1);
+            }
             TerminalModel = null;
         }
 
         /// <summary>
         /// Call to notify the view bindings that the property provided has changed.
-        /// Necessary during initialization of text on screen at beginning.
+        /// Necessary to update the text on screen.
         /// </summary>
-        protected void Notify(string propertyName)
+        protected void NotifyBinding(string propertyName)
         {
             if (this.PropertyChanged != null)
             {
@@ -88,7 +113,6 @@ namespace Fallout_Terminal.ViewModel
         /// <summary>
         /// Begins populating the screen with characters, one at a time.
         /// We await the method calls within because we want them to be non-blocking, but also sequential (not simultaneous).
-        /// Returns true when finished.
         /// </summary>
         async private Task InitializeScreen()
         {
@@ -100,40 +124,59 @@ namespace Fallout_Terminal.ViewModel
 
         /// <summary>
         /// Initializes the robco text at the top of the game screen, character by character.
+        /// 
+        /// Can be cancelled by setting PowerIsOn to false.
         /// </summary>
-        /// <returns></returns>
         async private Task InitializeRobcoText()
         {
-            // TODO: Fix screen contents shifting as new lines are created.
             foreach (char character in ROBCO_TEXT)
             {
+                if (!PowerIsOn)
+                {
+                    RobcoTextCurrentlyDisplayed = null;
+                    NotifyBinding("RobcoTextCurrentlyDisplayed");
+                    return;
+                }
                 await Task.Delay(DELAY_TIME);
                 RobcoTextCurrentlyDisplayed += character;
-                Notify("RobcoTextCurrentlyDisplayed");
+                NotifyBinding("RobcoTextCurrentlyDisplayed");
             }
         }
 
         /// <summary>
         /// Initializes the attempts remaining text at the top of the screen character by character.
+        /// 
+        /// Can be cancelled by setting PowerIsOn to false.
         /// </summary>
-        /// <returns></returns>
         async private Task InitializeAttemptsText()
         {
             foreach (char character in DEFAULT_ATTEMPTS_TEXT)
             {
+                if (!PowerIsOn)
+                {
+                    AttemptsTextCurrentlyDisplayed = null;
+                    NotifyBinding("AttemptsTextCurrentlyDisplayed");
+                    return;
+                }
                 await Task.Delay(DELAY_TIME);
                 AttemptsTextCurrentlyDisplayed += character;
-                Notify("AttemptsTextCurrentlyDisplayed");
+                NotifyBinding("AttemptsTextCurrentlyDisplayed");
             }
         }
 
         /// <summary>
         /// Triggers the initialization of all of the body text elements, one at a time.
+        /// 
+        /// Can be cancelled by setting PowerIsOn to false.
         /// </summary>
         async private Task InitializeBodyText()
         {
             for (int line = 0; line < TerminalModel.NUMBER_OF_LINES; line++)
             {
+                if (!PowerIsOn)
+                {
+                    return;
+                }
                 bool isLeftColumn = true;
                 await InitializeNextHexValue(isLeftColumn, line);
                 await InitializeNextMemoryDumpLine(isLeftColumn, line);
@@ -145,6 +188,8 @@ namespace Fallout_Terminal.ViewModel
 
         /// <summary>
         /// Initializes the next hex value in the body, one character at a time.
+        /// 
+        /// Can be cancelled by setting PowerIsOn to false.
         /// </summary>
         /// <param name="isLeftColumn">When true, returns the value from the left column. False, the right.</param>
         /// <param name="line">The line number to return the value for.</param>
@@ -157,15 +202,23 @@ namespace Fallout_Terminal.ViewModel
             for(int character = 0; character < 6; character++)
             {
                 await Task.Delay(DELAY_TIME);
+                if (!PowerIsOn)
+                {
+                    LeftHexCurrentlyDisplayed = null;
+                    RightHexCurrentlyDisplayed = null;
+                    NotifyBinding("LeftHexCurrentlyDisplayed");
+                    NotifyBinding("RightHexCurrentlyDisplayed");
+                    return;
+                }
                 if (isLeftColumn)
                 {
                     LeftHexCurrentlyDisplayed += hexValue[character];
-                    Notify("LeftHexCurrentlyDisplayed");
+                    NotifyBinding("LeftHexCurrentlyDisplayed");
                 }
                 else
                 {
                     RightHexCurrentlyDisplayed += hexValue[character];
-                    Notify("RightHexCurrentlyDisplayed");
+                    NotifyBinding("RightHexCurrentlyDisplayed");
                 }
                 // We need to add a newline at the end of each line here.
                 if (character == 5)
@@ -185,6 +238,8 @@ namespace Fallout_Terminal.ViewModel
         /// <summary>
         /// Initializes the next line in the memory dump part of the body text,
         /// one character at a time.
+        /// 
+        /// Can be cancelled by setting PowerIsOn to false.
         /// </summary>
         /// <param name="isLeftColumn">bool representing whether or not the next value should come from the left column.</param>
         /// <param name="line">The line number to initialize.</param>
@@ -195,17 +250,25 @@ namespace Fallout_Terminal.ViewModel
             for (int character = 0; character < MemoryDump.LINE_LENGTH; character++)
             {
                 await Task.Delay(DELAY_TIME);
+                if (!PowerIsOn)
+                {
+                    LeftMemoryDumpCurrentlyDisplayed = null;
+                    RightMemoryDumpCurrentlyDisplayed = null;
+                    NotifyBinding("LeftMemoryDumpCurrentlyDisplayed");
+                    NotifyBinding("RightMemoryDumpCurrentlyDisplayed");
+                    return;
+                }
                 if (isLeftColumn)
                 {
                     int offset = lineNumber * MemoryDump.LINE_LENGTH;
                     LeftMemoryDumpCurrentlyDisplayed += contents[character + offset];
-                    Notify("LeftMemoryDumpCurrentlyDisplayed");
+                    NotifyBinding("LeftMemoryDumpCurrentlyDisplayed");
                 }
                 else
                 {
                     int offset = (lineNumber * MemoryDump.LINE_LENGTH) + (contents.Length / 2);
                     RightMemoryDumpCurrentlyDisplayed += contents[character + offset];
-                    Notify("RightMemoryDumpCurrentlyDisplayed");
+                    NotifyBinding("RightMemoryDumpCurrentlyDisplayed");
                 }
                 if (character == MemoryDump.LINE_LENGTH - 1)
                 {
@@ -225,13 +288,19 @@ namespace Fallout_Terminal.ViewModel
         /// <summary>
         /// Initializes the input column on the right of the screen.
         /// This column only has one character.
+        /// 
+        /// Can be cancelled by setting PowerIsOn to false.
         /// </summary>
         /// <returns></returns>
         async private Task InitializeInputColumn()
         {
+            if (!PowerIsOn)
+            {
+                return;
+            }
             await Task.Delay(DELAY_TIME);
             InputColumnCurrentlyDisplayed += ">";
-            Notify("InputColumnCurrentlyDisplayed");
+            NotifyBinding("InputColumnCurrentlyDisplayed");
         }
 
         /// <summary>
@@ -246,13 +315,13 @@ namespace Fallout_Terminal.ViewModel
             LeftMemoryDumpCurrentlyDisplayed = null;
             RightMemoryDumpCurrentlyDisplayed = null;
             InputColumnCurrentlyDisplayed = null;
-            Notify("RobcoTextCurrentlyDisplayed");
-            Notify("AttemptsTextCurrentlyDisplayed");
-            Notify("LeftHexCurrentlyDisplayed");
-            Notify("RightHexCurrentlyDisplayed");
-            Notify("LeftMemoryDumpCurrentlyDisplayed");
-            Notify("RightMemoryDumpCurrentlyDisplayed");
-            Notify("InputColumnCurrentlyDisplayed");
+            NotifyBinding("RobcoTextCurrentlyDisplayed");
+            NotifyBinding("AttemptsTextCurrentlyDisplayed");
+            NotifyBinding("LeftHexCurrentlyDisplayed");
+            NotifyBinding("RightHexCurrentlyDisplayed");
+            NotifyBinding("LeftMemoryDumpCurrentlyDisplayed");
+            NotifyBinding("RightMemoryDumpCurrentlyDisplayed");
+            NotifyBinding("InputColumnCurrentlyDisplayed");
         }
 
         /// <summary>
@@ -268,7 +337,7 @@ namespace Fallout_Terminal.ViewModel
                 s.Append("\u25AE ");
             }
             AttemptsTextCurrentlyDisplayed = "Attempts Remaining: " + s.ToString();
-            Notify("AttemptsTextCurrentlyDisplayed");
+            NotifyBinding("AttemptsTextCurrentlyDisplayed");
         }
 
         /// <summary>
@@ -293,7 +362,7 @@ namespace Fallout_Terminal.ViewModel
             {
                 await Task.Delay(DELAY_TIME);
                 TerminalModel.InputColumn.AppendToLastLine(character.ToString());
-                Notify("InputColumnCurrentlyDisplayed");
+                NotifyBinding("InputColumnCurrentlyDisplayed");
             }
         }
 
@@ -303,14 +372,13 @@ namespace Fallout_Terminal.ViewModel
         /// </summary>
         public void InputColumnChanged(object sender, EventArgs args)
         {
-            
             StringBuilder b = new StringBuilder();
             foreach (string s in TerminalModel.InputColumn.Contents)
             {
                 b.AppendLine(s);
             }
             InputColumnCurrentlyDisplayed = b.ToString();
-            Notify("InputColumnCurrentlyDisplayed");
+            NotifyBinding("InputColumnCurrentlyDisplayed");
         }
 
         /// <summary>
@@ -318,7 +386,6 @@ namespace Fallout_Terminal.ViewModel
         /// </summary>
         private void OnMemoryDumpContentsChanged(object sender, EventArgs args)
         {
-            // Most of the code here is copypastad from the initialize method in this class.
             bool isLeftColumn = true;
             bool finished = false;
             int lineNumber = 0;
@@ -361,8 +428,8 @@ namespace Fallout_Terminal.ViewModel
                 }
                 isLeftColumn = !isLeftColumn;
             }
-            Notify("LeftMemoryDumpCurrentlyDisplayed");
-            Notify("RightMemoryDumpCurrentlyDisplayed");
+            NotifyBinding("LeftMemoryDumpCurrentlyDisplayed");
+            NotifyBinding("RightMemoryDumpCurrentlyDisplayed");
             NotifyMemoryContentsChanged();
         }
 
@@ -374,6 +441,24 @@ namespace Fallout_Terminal.ViewModel
         private void NotifyMemoryContentsChanged()
         {
             MemoryDumpContentsChanged?.Invoke(this, new EventArgs());
+        }
+
+        /// <summary>
+        /// Fires the event to notify the rest of the program that the terminal initialization 
+        /// is complete and everything is ready.
+        /// </summary>
+        private void NotifyGameReady()
+        {
+            TerminalReady?.Invoke(this, new EventArgs());
+        }
+
+        /// <summary>
+        /// Fires the event to notify the program that power off has been requested.
+        /// This allows the program to take any actions necessary when this happens.
+        /// </summary>
+        private void NotifyOnPowerOff()
+        {
+            OnPowerOff?.Invoke(this, new EventArgs());
         }
     }
 }

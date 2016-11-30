@@ -1,13 +1,10 @@
 ﻿using Fallout_Terminal.Model;
-using Fallout_Terminal.Utilities;
-using Fallout_Terminal.ViewModel;
 using Fallout_Terminal.Sound;
+using Fallout_Terminal.Utilities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
-using System.Windows;
 using System.Windows.Documents;
 using System.Windows.Input;
 
@@ -38,16 +35,14 @@ namespace Fallout_Terminal.View
         private List<string> UsedBracketTricks = new List<string>();
 
         /// <summary>
-        /// Creates a standard instance of the SelectionManager class.
+        /// Creates a new instance of SelectionManager.
         /// </summary>
         public SelectionManager(MainWindow window)
         {
             MainWindow = window;
-            Y = 0;
-            X = 0;
-            ActiveSide = Side.Left;
             MainWindow.ViewModel.MemoryDumpContentsChanged += OnMemoryDumpContentsChanged;
-            // TODO: Use event to fix so that first character starts out visibly selected upon each start.
+            MainWindow.ViewModel.TerminalReady += OnTerminalReady;
+            MainWindow.ViewModel.OnPowerOff += OnPowerOff;
         }
 
         /// <summary>
@@ -76,6 +71,42 @@ namespace Fallout_Terminal.View
                     SoundPlayer.PlayEnterKeySound();
                     break;
             }
+        }
+
+        /// <summary>
+        /// Called when initialization is complete to enable selection to begin. 
+        /// This method will ensure that no weird stuff happens when the program is initializing.
+        /// It also ensures that when initialization is complete, the first character in the first
+        /// column starts out selected and focused. Finally, it also resets instance variables 
+        /// as needed to ensure no data is accidentally carried over from one play to the next.
+        /// This sounds like too many responsibilities for one method to have, I know, 
+        /// but if you read the method you'll see it's really fine.
+        /// </summary>
+        private void OnTerminalReady(object sender, EventArgs args)
+        {
+            X = 0;
+            Y = 0;
+            MainWindow.LeftPasswordColumn.Focusable = true;
+            MainWindow.RightPasswordColumn.Focusable = true;
+            ActiveSide = Side.Left;
+            MainWindow.LeftPasswordColumn.Focus();
+            UsedBracketTricks.Clear();
+            MoveSelection(); // This call will highlight the first character.
+        }
+
+        /// <summary>
+        /// Called when the program has notified that power is being turned off, allowing
+        /// us to take appropriate action.
+        /// 
+        /// In this case, appropriate action means that we need to reset the password columns
+        /// to be non-focusable. Otherwise, the bug we fixed where users could do weird stuff
+        /// while the program was initializing would still be present once the player power
+        /// cycled the terminal.
+        /// </summary>
+        private void OnPowerOff(object sender, EventArgs args)
+        {
+            MainWindow.LeftPasswordColumn.Focusable = false;
+            MainWindow.LeftPasswordColumn.Focusable = false;
         }
 
         /// <summary>
@@ -136,7 +167,8 @@ namespace Fallout_Terminal.View
 
         /// <summary>
         /// Actually moves the selection. Handles changing of focus as appropriate,
-        /// and adjustment of the textPointer positions.
+        /// and adjustment of the textPointer positions. Also handles special cases,
+        /// such as words and bracket tricks.
         /// </summary>
         private void MoveSelection()
         {
@@ -196,6 +228,7 @@ namespace Fallout_Terminal.View
                     endChar = '}';
                     break;
                 default:
+                    // Meaning there are no valid bracket tricks on this line...
                     return;
             }
             string textAfter;
@@ -203,11 +236,12 @@ namespace Fallout_Terminal.View
             {
                 textAfter = LeftEnd.GetTextInRun(LogicalDirection.Forward);
             }
-            else // Assuming it's not null...
+            else // ActiveSide == Side.Right
             {
                 textAfter = RightEnd.GetTextInRun(LogicalDirection.Forward);
             }
             int offset = 0;
+            // Only check the currently selected line
             while (offset < textAfter.Length && textAfter[offset] != '\n')
             {
                 // No words are allowed between the bracket pairs.
@@ -224,7 +258,7 @@ namespace Fallout_Terminal.View
                         MainWindow.LeftPasswordColumn.Selection.Select(LeftStart, LeftEnd);
                         break;
                     }
-                    else if (ActiveSide == Side.Right)
+                    else // ActiveSide == Side.Right
                     {
                         RightEnd = RightEnd.GetPositionAtOffset(offset + 1);
                         MainWindow.RightPasswordColumn.Selection.Select(RightStart, RightEnd);
@@ -237,8 +271,12 @@ namespace Fallout_Terminal.View
 
         /// <summary>
         /// Expands the text selection to fit entire words whenever a letter is selected.
+        /// 
+        /// <Remarks>
+        /// This method is probably longer than it should be, but only because it handles two cases.
+        /// It would be weird to have a seperate method for the left side and for the right side.
+        /// </Remarks>
         /// </summary>
-        /// <param name="column">The column (left or right) that the selection is in.</param>
         private void ResizeSelectionForWords()
         {
             LeftJumpOffset = 0;
@@ -310,6 +348,10 @@ namespace Fallout_Terminal.View
 
         /// <summary>
         /// Adjusts selection cursor to just past the left end of the selected word.
+        /// 
+        /// If the selected word is broken across more than one line of input, than the cursor
+        /// is moved to the appropriate position on the line above or below. This method will not
+        /// allow the cursor to exit the bounds of the screen.
         /// </summary>
         private void JumpToLeftEndOfSelectedWord()
         {
@@ -321,16 +363,16 @@ namespace Fallout_Terminal.View
             }
             if (X < leftEndOfColumn)
             {
-                    if (Y > 0)
-                    {
-                        Y--;
-                        X += TerminalModel.NUMBER_OF_COLUMNS + 1; // The +1 compensates for the X--; in MoveSelectionLeft()
-                    }
-                    else
-                    {
-                        Y = 0;
-                        X = 0;
-                    }
+                if (Y > 0)
+                {
+                    Y--;
+                    X += TerminalModel.NUMBER_OF_COLUMNS + 1; // The +1 compensates for the X--; in MoveSelectionLeft()
+                }
+                else
+                {
+                    Y = 0;
+                    X = 0;
+                }
             }
             UpdateActiveSide();
         }
@@ -381,11 +423,16 @@ namespace Fallout_Terminal.View
             {
                 return (2 + x - TerminalModel.NUMBER_OF_COLUMNS) + (y * (TerminalModel.NUMBER_OF_COLUMNS + 1));
             }
+            // I don't see how this would ever happen, but I suppose in this case returing 0 is logical.
             return 0;
         }
 
         /// <summary>
-        /// Submits the current selection to the viewModel to be processed by the game logic.
+        /// Submits the current selection to the ViewModel to be processed by the game logic.
+        /// 
+        /// If the current selection happens to be a bracket trick, the X and Y coordinates of the
+        /// trick are added to the list of used bracket tricks, to ensure the players can't use the 
+        /// same bracket trick multiple times.
         /// </summary>
         private void SubmitSelection(string selection)
         {
@@ -400,7 +447,6 @@ namespace Fallout_Terminal.View
         /// <summary>
         /// Returns the current user selection, as a parsed string in which the newline characters have been removed.
         /// </summary>
-        /// <returns></returns>
         private string GetSelection()
         {
             string selection = "";
@@ -418,7 +464,9 @@ namespace Fallout_Terminal.View
 
         /// <summary>
         /// Notifies the viewModel that the current user selection is changed, so that the view model can deal with it as it wishes.
-        /// Also, since we are already in the View, we might as well play the delightful clacky keyboard sounds while here.
+        /// 
+        /// Also, we might as well play the delightful clacky keyboard sounds while here.
+        /// (The sounds are played on a Task.Delay() timer, which is why this method is async.)
         /// </summary>
         async private void NotifySelectionChanged()
         {
@@ -434,6 +482,10 @@ namespace Fallout_Terminal.View
         /// <summary>
         /// Updates the class field reprsenting the side of the input we are on.
         /// E.g., which of the 2 columns of memory dump is currently selected.
+        /// 
+        /// The word column as used here should not be confused with the way it is used in 
+        /// TerminalModel.NUMBER_OF_COLUMNS. In that case, we are reffering to the columns within each of
+        /// the two memory dump columns.
         /// </summary>
         private void UpdateActiveSide()
         {
@@ -441,11 +493,10 @@ namespace Fallout_Terminal.View
         }
 
         /// <summary>
-        /// Returns true if the bracket trick has already been used.
+        /// Returns true if a bracket trick at the provided coordinate has already been used.
         /// </summary>
-        /// <param name="x">The x coordinate of the proposed bracket trick.</param>
-        /// <param name="y">The y coordinate of the proposed bracket trick.</param>
-        /// <returns></returns>
+        /// <param name="x">The x coordinate of the bracket trick.</param>
+        /// <param name="y">The y coordinate of the bracket trick.</param>
         private bool IsBracketTrickUsed(int x, int y)
         {
             if (UsedBracketTricks.Contains(x + "," + y))
@@ -461,7 +512,8 @@ namespace Fallout_Terminal.View
         /// <summary>
         /// Called when memory dump contents are changed.
         /// This method is only needed to fix that nasty selection bug which causes the entire 
-        /// section to be highlighted upon any changes.
+        /// section to be highlighted upon any changes. It normally would be bad practice to place it here,
+        /// and some refactoring could probably find a better way to do this, but I haven't the time.
         /// </summary>
         private void OnMemoryDumpContentsChanged(object sender, EventArgs args)
         {
