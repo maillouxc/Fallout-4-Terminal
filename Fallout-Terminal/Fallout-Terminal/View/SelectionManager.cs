@@ -83,12 +83,12 @@ namespace Fallout_Terminal.View
         /// </summary>
         private void MoveSelectionLeft()
         {
-            if(X > 0)
+            if (IsWordCurrentlySelected)
             {
-                if (IsWordCurrentlySelected)
-                {
-                    JumpToLeftEndOfSelectedWord();
-                }
+                JumpToLeftEndOfSelectedWord();
+            }
+            if (X > 0)
+            {
                 X--;
                 MoveSelection();
             }
@@ -99,12 +99,12 @@ namespace Fallout_Terminal.View
         /// </summary>
         private void MoveSelectionRight()
         {
-            if(X < (TerminalModel.NUMBER_OF_COLUMNS * 2) - 1)
+            if (IsWordCurrentlySelected)
             {
-                if (IsWordCurrentlySelected)
-                {
-                    JumpToRightEndOfSelectedWord();
-                }
+                JumpToRightEndOfSelectedWord();
+            }
+            if (X < (TerminalModel.NUMBER_OF_COLUMNS * 2) - 1)
+            {
                 X++;
                 MoveSelection();
             }
@@ -313,8 +313,25 @@ namespace Fallout_Terminal.View
         /// </summary>
         private void JumpToLeftEndOfSelectedWord()
         {
-            // TODO: Fix bug when split across multiple lines.
             X -= LeftJumpOffset;
+            int leftEndOfColumn = 0;
+            if (ActiveSide == Side.Right)
+            {
+                leftEndOfColumn = TerminalModel.NUMBER_OF_COLUMNS;
+            }
+            if (X < leftEndOfColumn)
+            {
+                    if (Y > 0)
+                    {
+                        Y--;
+                        X += TerminalModel.NUMBER_OF_COLUMNS + 1; // The +1 compensates for the X--; in MoveSelectionLeft()
+                    }
+                    else
+                    {
+                        Y = 0;
+                        X = 0;
+                    }
+            }
             UpdateActiveSide();
         }
 
@@ -323,8 +340,25 @@ namespace Fallout_Terminal.View
         /// </summary>
         private void JumpToRightEndOfSelectedWord()
         {
-            // TODO: Fix bug when split across multiple lines.
             X += RightJumpOffset;
+            int rightEndOfColumn = TerminalModel.NUMBER_OF_COLUMNS - 1;
+            if (ActiveSide == Side.Right)
+            {
+                rightEndOfColumn = (TerminalModel.NUMBER_OF_COLUMNS * 2) - 1;
+            }
+            if (X > rightEndOfColumn)
+            {
+                if (Y < TerminalModel.NUMBER_OF_LINES - 1)
+                {
+                    Y++;
+                    X -= TerminalModel.NUMBER_OF_COLUMNS + 1; // The -1 compensates for the X++ in MoveSelectionRight()
+                }
+                else
+                {
+                    Y = TerminalModel.NUMBER_OF_LINES - 1;
+                    X = (TerminalModel.NUMBER_OF_COLUMNS * 2) - 1;
+                }
+            }
             UpdateActiveSide();
         }
 
