@@ -337,6 +337,10 @@ namespace Fallout_Terminal.View
 
         /// <summary>
         /// Adjusts the selection cursor to just past the right end of the selected word.
+        /// 
+        /// If the selected word is broken across more than one line of input, than the cursor
+        /// is moved to the appropriate position on the line above or below. This method will not
+        /// allow the cursor to exit the bounds of the screen.
         /// </summary>
         private void JumpToRightEndOfSelectedWord()
         {
@@ -351,7 +355,7 @@ namespace Fallout_Terminal.View
                 if (Y < TerminalModel.NUMBER_OF_LINES - 1)
                 {
                     Y++;
-                    X -= TerminalModel.NUMBER_OF_COLUMNS + 1; // The -1 compensates for the X++ in MoveSelectionRight()
+                    X -= TerminalModel.NUMBER_OF_COLUMNS + 1; // The +1 compensates for the X++ in MoveSelectionRight()
                 }
                 else
                 {
