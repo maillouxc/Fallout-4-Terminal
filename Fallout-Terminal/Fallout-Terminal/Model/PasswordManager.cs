@@ -1,5 +1,4 @@
 ﻿using Fallout_Terminal.Utilities;
-using System;
 using System.Collections.Generic;
 
 namespace Fallout_Terminal.Model

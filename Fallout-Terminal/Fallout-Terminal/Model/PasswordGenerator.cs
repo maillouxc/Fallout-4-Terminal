@@ -18,6 +18,7 @@ namespace Fallout_Terminal.Model
         /// </summary>
         public PasswordGenerator()
         {
+            // Intentionally blank.
         }
 
         /// <summary>

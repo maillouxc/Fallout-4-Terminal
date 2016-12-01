@@ -47,29 +47,34 @@ namespace Fallout_Terminal.View
 
         /// <summary>
         /// Handler for keyPress Events while the program is running.
+        /// 
+        /// If the player is locked out, nothing happens.
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="args"></param>
         internal void OnKeyDown(object sender, KeyEventArgs args)
         {
-            switch (args.Key)
+            if (!MainWindow.ViewModel.IsLockedOut)
             {
-                case (Key.Left):
-                    MoveSelectionLeft();
-                    break;
-                case (Key.Right):
-                    MoveSelectionRight();
-                    break;
-                case (Key.Up):
-                    MoveSelectionUp();
-                    break;
-                case (Key.Down):
-                    MoveSelectionDown();
-                    break;
-                case (Key.Enter):
-                    SubmitSelection(GetSelection());
-                    SoundPlayer.PlayEnterKeySound();
-                    break;
+                switch (args.Key)
+                {
+                    case (Key.Left):
+                        MoveSelectionLeft();
+                        break;
+                    case (Key.Right):
+                        MoveSelectionRight();
+                        break;
+                    case (Key.Up):
+                        MoveSelectionUp();
+                        break;
+                    case (Key.Down):
+                        MoveSelectionDown();
+                        break;
+                    case (Key.Enter):
+                        SubmitSelection(GetSelection());
+                        SoundPlayer.PlayEnterKeySound();
+                        break;
+                }
             }
         }
 

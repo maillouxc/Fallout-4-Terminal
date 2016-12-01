@@ -29,6 +29,7 @@ namespace Fallout_Terminal.ViewModel
         public string RightMemoryDumpCurrentlyDisplayed { get; private set; }
         public string InputColumnCurrentlyDisplayed { get; private set; }
         public bool PowerIsOn { get; private set; }
+        public bool IsLockedOut { get; private set; } = false;
 
         public event PropertyChangedEventHandler PropertyChanged;
         public delegate void MemoryDumpContentsChangedHandler(object sender, EventArgs args);
@@ -37,6 +38,7 @@ namespace Fallout_Terminal.ViewModel
         public event TerminalReadyHandler TerminalReady;
         public delegate void PowerOffEventHandler(object sender, EventArgs args);
         public event PowerOffEventHandler OnPowerOff;
+        
 
         public const int DELAY_TIME = 20; // Milliseconds.
 
@@ -61,6 +63,7 @@ namespace Fallout_Terminal.ViewModel
         /// </summary>
         public async void PowerOn()
         {
+            IsLockedOut = false;
             PowerIsOn = true;
             TerminalModel = new TerminalModel();
             InitializationComplete = false;
@@ -72,6 +75,8 @@ namespace Fallout_Terminal.ViewModel
                 TerminalModel.AttemptsChanged += AttemptsChanged;
                 TerminalModel.InputColumn.InputColumnChanged += this.InputColumnChanged;
                 TerminalModel.MemoryDump.OnContentsChanged += OnMemoryDumpContentsChanged;
+                TerminalModel.AccessGranted += OnAccessGranted;
+                TerminalModel.Lockout += OnLockout;
                 if (PowerIsOn)
                 {
                     NotifyGameReady();
@@ -459,6 +464,34 @@ namespace Fallout_Terminal.ViewModel
         private void NotifyOnPowerOff()
         {
             OnPowerOff?.Invoke(this, new EventArgs());
+        }
+
+        /// <summary>
+        /// Called when the player is locked out of the terminal. For now, we just shut off the terminal.
+        /// In the game, there would be a timer before any action could be taken, but we aren't that concerned here.
+        /// </summary>
+        private async void OnLockout(object sender, EventArgs args)
+        {
+            IsLockedOut = true;
+            await Task.Delay(5000);
+            await PowerOff();
+        }
+
+        /// <summary>
+        /// Called when the player enters the correct password.
+        /// 
+        /// This method just turns the power off and displays a little message to the player. It's a hack,
+        /// but I have to study for finals, so meh.
+        /// </summary>
+        private async void OnAccessGranted(object sender, EventArgs args)
+        {
+            IsLockedOut = true; // This will freeze player input.
+            ClearScreen();
+            await Task.Delay(100);
+            RobcoTextCurrentlyDisplayed = ">Accss Granted. Greetings, Vault Dweller.";
+            NotifyBinding("RobcoTextCurrentlyDisplayed");
+            AttemptsTextCurrentlyDisplayed = "Ideas? Please, help improve this project \n by making your own changes at \n GitHub.com/maillouxc/Fallout-4-Terminal. \n Thanks for playing.";
+            NotifyBinding("AttemptsTextCurrentlyDisplayed");
         }
     }
 }

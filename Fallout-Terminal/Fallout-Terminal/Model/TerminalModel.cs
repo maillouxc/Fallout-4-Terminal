@@ -1,10 +1,7 @@
 ﻿using Fallout_Terminal.Sound;
 using Fallout_Terminal.Utilities;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Fallout_Terminal.Model
 {
@@ -38,6 +35,10 @@ namespace Fallout_Terminal.Model
 
         public delegate void AttemptsChangedEventHandler(object sender, AttemptsChangedEventArgs args);
         public event AttemptsChangedEventHandler AttemptsChanged;
+        public delegate void LockoutEventHandler(object sender, EventArgs args);
+        public event LockoutEventHandler Lockout;
+        public delegate void AccessGrantedEventHandler(object sender, EventArgs args);
+        public event AccessGrantedEventHandler AccessGranted;
 
         public const int NUMBER_OF_LINES = 16;
         public const int NUMBER_OF_COLUMNS = 12;
@@ -74,7 +75,7 @@ namespace Fallout_Terminal.Model
         public void ProcessInput(String input)
         {
             // We can check for bracket tricks by their length and first character.
-            if(input.Length > 1 && input.Length != PasswordManager.PasswordLength && !char.IsLetter(input[0]))
+            if(input.Length > 1 && !char.IsLetter(input[0]))
             {
                 OnBracketTrickEntered(input);
             }
@@ -100,20 +101,28 @@ namespace Fallout_Terminal.Model
         {
             // Come at me bro
             SoundPlayer.PlayCorrectPasswordSound();
+            NotifyAccessGranted();
         }
-
 
         /// <summary>
         /// Called whenever an incorrect password is entered.
         /// </summary>
         private void OnIncorrectPasswordEntered(int charsInCommon, string password)
         {
+            AttemptsRemaining--;
             InputColumn.OverwriteLastLine(">" + password);
             InputColumn.AddLine(">Entry denied.");
-            InputColumn.AddLine(">Likeness=" + charsInCommon);
-            InputColumn.AddLine(">");
-            AttemptsRemaining--;
-            // This violates MVVC? Fight me. I'm not spending my life writing events
+            if (AttemptsRemaining == 0)
+            {
+                InputColumn.AddLine(">Init lockout.");
+                NotifyLockout();
+            }
+            else
+            {
+                InputColumn.AddLine(">Likeness=" + charsInCommon);
+                InputColumn.AddLine(">");    
+            }
+            // This violates MVVM? Fight me. I'm not spending my life writing events
             // for a toy program just to conform with design patterns.
             SoundPlayer.PlayIncorrectPasswordSound();
         }
@@ -155,11 +164,12 @@ namespace Fallout_Terminal.Model
                         // If this is actually the correct password, we can't remove it!
                         goto TryAgainPoint; // Fight me bro.
                     }
-                PasswordManager.PotentialPasswords.RemoveAt(rand);
+                PasswordManager.PotentialPasswords.Remove(passwordToRemove);
                 MemoryDump.Remove(passwordToRemove);
+                InputColumn.AddLine(">Dud Removed.");
+                InputColumn.AddLine(">");
             }
-            InputColumn.AddLine(">Dud Removed.");
-            InputColumn.AddLine(">");
+
         }
 
         /// <summary>
@@ -171,6 +181,22 @@ namespace Fallout_Terminal.Model
             AttemptsRemaining = STARTING_ATTEMPTS;
             InputColumn.AddLine(">Tries Reset.");
             InputColumn.AddLine(">");
+        }
+
+        /// <summary>
+        /// Notifies the rest of the program of lockout.
+        /// </summary>
+        private void NotifyLockout()
+        {
+            Lockout?.Invoke(this, new EventArgs());
+        }
+
+        /// <summary>
+        /// Notifies the program that accesss to the terminal has been granted.
+        /// </summary>
+        private void NotifyAccessGranted()
+        {
+            AccessGranted?.Invoke(this, new EventArgs());
         }
     }
 }
