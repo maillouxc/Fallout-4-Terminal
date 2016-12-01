@@ -99,6 +99,11 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+    <None Include="bin\Debug\Fallout-Terminal.exe.config" />
+    <None Include="bin\Debug\Fallout-Terminal.vshost.exe.config" />
+    <None Include="bin\Release\Fallout-Terminal.exe.config" />
+    <None Include="bin\Release\Fallout-Terminal.vshost.exe.config" />
+    <None Include="bin\Release\Fallout-Terminal.vshost.exe.manifest" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -114,6 +119,16 @@
     <Resource Include="Resources\Images\TerminalScreenBackground.png" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="bin\Debug\Fallout-Terminal.exe" />
+    <Content Include="bin\Debug\Fallout-Terminal.pdb" />
+    <Content Include="bin\Debug\Fallout-Terminal.vshost.exe" />
+    <Content Include="bin\Debug\Resources\Sounds\powerOff.wav" />
+    <Content Include="bin\Debug\Resources\Sounds\powerOn.wav" />
+    <Content Include="bin\Release\Fallout-Terminal.exe" />
+    <Content Include="bin\Release\Fallout-Terminal.pdb" />
+    <Content Include="bin\Release\Fallout-Terminal.vshost.exe" />
+    <Content Include="bin\Release\Resources\Sounds\powerOff.wav" />
+    <Content Include="bin\Release\Resources\Sounds\powerOn.wav" />
     <Content Include="Resources\Sounds\correctPassword.wav" />
     <Content Include="Resources\Sounds\enterKey.wav" />
     <Content Include="Resources\Sounds\powerOff.wav">
