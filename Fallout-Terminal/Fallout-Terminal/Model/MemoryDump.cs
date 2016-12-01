@@ -14,11 +14,21 @@ namespace Fallout_Terminal.Model
 
         private const int LENGTH = LINE_LENGTH * NUMBER_OF_LINES * 2; // 2 columns
 
+        /// <summary>
+        /// The contents of the memory dump.
+        /// </summary>
         public string Contents { get; private set; }
+
+        public delegate void ContentsChangedHandler(object sender, EventArgs args);
+        public event ContentsChangedHandler OnContentsChanged;
 
         private GarbageCharacterGenerator GarbageCharacterGenerator;
         private List<string> passwords;
 
+        /// <summary>
+        /// Creates an instance of MemoryDump, full of potential passwords and ready to go.
+        /// </summary>
+        /// <param name="passwords"></param>
         public MemoryDump(List<string> passwords)
         {
             Contents = "";
@@ -26,7 +36,34 @@ namespace Fallout_Terminal.Model
             this.passwords = passwords;
             PopulateContentsWithGarbageCharacters();
             PopulateContentsWithPasswords();
-            Console.WriteLine(Contents); // TESTING ONLY
+        }
+
+        /// <summary>
+        /// Removes the provided password from the memory dump, and replaces it with dots.
+        /// Assumes there is never more than one instance of the given password.
+        /// 
+        /// Note: This method can actually be used to replace any string within the memory dump with dots,
+        /// but there is really no reason to do this.
+        /// </summary>
+        public void Remove(string password)
+        {
+            StringBuilder b = new StringBuilder();
+            for (int i = 0; i < password.Length; i++)
+            {
+                b.Append('.');
+            }
+            string dots = b.ToString();
+            Contents = Contents.Replace(password, dots);
+            NotifyContentsChanged(new EventArgs());
+        }
+
+        /// <summary>
+        /// Call to notify program that contents of memory dump have changed.
+        /// </summary>
+        /// <param name="args"></param>
+        private void NotifyContentsChanged(EventArgs args)
+        {
+            OnContentsChanged?.Invoke(this, args);
         }
         
         /// <summary>

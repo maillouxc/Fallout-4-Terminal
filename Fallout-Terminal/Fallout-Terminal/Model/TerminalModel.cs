@@ -1,9 +1,7 @@
-﻿using Fallout_Terminal.Utilities;
+﻿using Fallout_Terminal.Sound;
+using Fallout_Terminal.Utilities;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Fallout_Terminal.Model
 {
@@ -37,6 +35,10 @@ namespace Fallout_Terminal.Model
 
         public delegate void AttemptsChangedEventHandler(object sender, AttemptsChangedEventArgs args);
         public event AttemptsChangedEventHandler AttemptsChanged;
+        public delegate void LockoutEventHandler(object sender, EventArgs args);
+        public event LockoutEventHandler Lockout;
+        public delegate void AccessGrantedEventHandler(object sender, EventArgs args);
+        public event AccessGrantedEventHandler AccessGranted;
 
         public const int NUMBER_OF_LINES = 16;
         public const int NUMBER_OF_COLUMNS = 12;
@@ -66,16 +68,21 @@ namespace Fallout_Terminal.Model
 
         /// <summary>
         /// Takes a string of input text from the user, and determines if it is
-        /// the correct password, an incorrect password, or something else, and in the case
-        /// of correct/incorrect passwords, triggers the appropriate game logic following this information.
+        /// the correct password, or an Incorrect Password.
+        /// Triggers the appropriate game logic following this information.
         /// </summary>
         /// <param name="input">The input string to process.</param>
         public void ProcessInput(String input)
         {
-            if(input.Length == PasswordManager.PasswordLength)
+            // We can check for bracket tricks by their length and first character.
+            if(input.Length > 1 && !char.IsLetter(input[0]))
+            {
+                OnBracketTrickEntered(input);
+            }
+            else if(input.Length == PasswordManager.PasswordLength)
             {
                 int charsInCommon;
-                charsInCommon = PasswordManager.CheckPassword(input);
+                charsInCommon = PasswordManager.GetNumberOfCorrectChars(input);
                 if (charsInCommon == PasswordManager.PasswordLength)
                 {
                     OnCorrectPasswordEntered(input);
@@ -92,39 +99,52 @@ namespace Fallout_Terminal.Model
         /// </summary>
         private void OnCorrectPasswordEntered(string password)
         {
-            // TODO: Fire event to play "correctPassword" sound.
+            // Come at me bro
+            SoundPlayer.PlayCorrectPasswordSound();
+            NotifyAccessGranted();
         }
-
 
         /// <summary>
         /// Called whenever an incorrect password is entered.
         /// </summary>
         private void OnIncorrectPasswordEntered(int charsInCommon, string password)
         {
+            AttemptsRemaining--;
             InputColumn.OverwriteLastLine(">" + password);
             InputColumn.AddLine(">Entry denied.");
-            InputColumn.AddLine(">Likeness=" + charsInCommon);
-            InputColumn.AddLine(">");
-            AttemptsRemaining--;
-            // TODO: Fire event to play "incorrectPassword" sound.
+            if (AttemptsRemaining == 0)
+            {
+                InputColumn.AddLine(">Init lockout.");
+                NotifyLockout();
+            }
+            else
+            {
+                InputColumn.AddLine(">Likeness=" + charsInCommon);
+                InputColumn.AddLine(">");    
+            }
+            // This violates MVVM? Fight me. I'm not spending my life writing events
+            // for a toy program just to conform with design patterns.
+            SoundPlayer.PlayIncorrectPasswordSound();
         }
 
         /// <summary>
         /// Called whenever a bracket trick is entered by the user.
+        /// 
+        /// Either removes a dud password, or replenishes the attempts remaining.
+        /// Replenishing attempts is only a 1 in 3 chance, while dud removal is 2 in 3.
         /// </summary>
-        private void OnBracketTrickEntered()
+        private void OnBracketTrickEntered(string text)
         {
             // Replenishing attempts should be less common than removing a dud.
-            int rand = RandomProvider.Next(0,2);
+            int rand = RandomProvider.Next(0,5);
+            InputColumn.OverwriteLastLine(">" + text);
             if(rand == 0)
             {
                 ReplenishAttempts();
-                Console.WriteLine("Attempts Replenished"); // Testing only
             }
             else
             {
                 RemoveDud();
-                Console.WriteLine("Dud Removed"); // Testing only
             }
         }
 
@@ -133,8 +153,23 @@ namespace Fallout_Terminal.Model
         /// </summary>
         private void RemoveDud()
         {
-            // TODO: Do not remove dud if no duds remaining.
-            // TODO: Implement.
+            int potentialPasswordsRemaining = PasswordManager.PotentialPasswords.Count;
+            if (PasswordManager.PotentialPasswords.Count > 1)
+            {
+                TryAgainPoint:
+                    int rand = RandomProvider.Next(0, potentialPasswordsRemaining - 1);
+                    string passwordToRemove = PasswordManager.PotentialPasswords.ElementAt(rand);
+                    if (passwordToRemove.Length == PasswordManager.GetNumberOfCorrectChars(passwordToRemove))
+                    {
+                        // If this is actually the correct password, we can't remove it!
+                        goto TryAgainPoint; // Fight me bro.
+                    }
+                PasswordManager.PotentialPasswords.Remove(passwordToRemove);
+                MemoryDump.Remove(passwordToRemove);
+                InputColumn.AddLine(">Dud Removed.");
+                InputColumn.AddLine(">");
+            }
+
         }
 
         /// <summary>
@@ -144,6 +179,24 @@ namespace Fallout_Terminal.Model
         private void ReplenishAttempts()
         {
             AttemptsRemaining = STARTING_ATTEMPTS;
+            InputColumn.AddLine(">Tries Reset.");
+            InputColumn.AddLine(">");
+        }
+
+        /// <summary>
+        /// Notifies the rest of the program of lockout.
+        /// </summary>
+        private void NotifyLockout()
+        {
+            Lockout?.Invoke(this, new EventArgs());
+        }
+
+        /// <summary>
+        /// Notifies the program that accesss to the terminal has been granted.
+        /// </summary>
+        private void NotifyAccessGranted()
+        {
+            AccessGranted?.Invoke(this, new EventArgs());
         }
     }
 }

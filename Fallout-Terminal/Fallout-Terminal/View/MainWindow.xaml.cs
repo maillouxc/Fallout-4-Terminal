@@ -1,42 +1,30 @@
-﻿using Fallout_Terminal.Model;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Documents;
 using System.Windows.Input;
 using Fallout_Terminal.ViewModel;
 using Fallout_Terminal.Sound;
 using Fallout_Terminal.View;
-using System.Windows.Media;
 using System.Threading.Tasks;
 
 namespace Fallout_Terminal
 {
     /// <summary>
-    /// Interaction logic for MainWindow.xaml
+    /// Code-behind for MainWindow.xaml
     /// </summary>
     public partial class MainWindow : Window
     {
         public TerminalViewModel ViewModel;
 
-        internal SoundManager SoundManager;
-
         private SelectionManager SelectionManager;
 
         /// <summary>
-        /// Creates an instance of the main window for the application, 
-        /// which contains all other UI elements.
+        /// Initializes an instance of the main window for the application.
         /// </summary>
         public MainWindow()
         {
-            // This method is just something that WPF apps MUST do. Don't touch it!
+            // This is just something that WPF apps MUST do.
             InitializeComponent();
-            // It's best to wait until stuff is fully loaded before manipulating it.
-            // Not doing so can cause some obscure bugs.
             ViewModel = FindResource("ViewModel") as TerminalViewModel;
-            SoundManager = new SoundManager();
             SelectionManager = new View.SelectionManager(this);
             // Using the "preview" events here allows us to detect the arrow key presses, which we otherwise can't.
             LeftPasswordColumn.PreviewKeyDown += new KeyEventHandler(SelectionManager.OnKeyDown);
@@ -44,95 +32,69 @@ namespace Fallout_Terminal
         }
 
         /// <summary>
-        /// Fired whenever the powerButton is clicked.
-        /// 
-        /// Plays a sound and tells the viewModel to enable the power.
+        /// Fired whenever the powerButton is clicked. Plays the appropriate sound depending on current power state, 
+        /// and tells the ViewModel to toggle the power.
         /// </summary>
         private void powerButton_Click(object sender, RoutedEventArgs e)
         {
             if(ViewModel.PowerIsOn)
             {
-                SoundManager.PlaySound(@"..\..\Resources\Sounds\powerOff.wav");
+                SoundPlayer.PlaySound(@"..\..\Resources\Sounds\powerOff.wav");
                 ViewModel.PowerOff();
             }
             else
             {
+                SoundPlayer.PlaySound(@"..\..\Resources\Sounds\powerOn.wav");
                 ViewModel.PowerOn();
-                SoundManager.PlaySound(@"..\..\Resources\Sounds\powerOn.wav");
-                //TODO: Think about this some more. Is this the right way to do this?
             }
         }
 
         /// <summary>
-        /// Fired whenever the text in the LeftPasswordColumn changes.
+        /// Fired whenever the text in the LeftPasswordColumn changes. Plays the appropriate sound.
         /// </summary>
-        private async void LeftPasswordColumn_TextChanged(object sender, TextChangedEventArgs e)
+        private void LeftPasswordColumn_TextChanged(object sender, TextChangedEventArgs e)
         {
-            if (SoundManager != null)
-            {
-                await Task.Delay(TerminalViewModel.DELAY_TIME);
-                SoundManager.PlayCharacterDisplaySound();
-            }
+            SoundPlayer.PlayCharacterDisplaySound();
         }
 
         /// <summary>
-        /// Fired whenever the text in the RightPasswordColumn changes.
+        /// Fired whenever the text in the RightPasswordColumn changes. Plays the appropriate sound.
         /// </summary>
-        private async void RightPasswordColumn_TextChanged(object sender, TextChangedEventArgs e)
+        private void RightPasswordColumn_TextChanged(object sender, TextChangedEventArgs e)
         {
-            if (SoundManager != null)
-            {
-                await Task.Delay(TerminalViewModel.DELAY_TIME);
-                SoundManager.PlayCharacterDisplaySound();
-            }
+            SoundPlayer.PlayCharacterDisplaySound();
         }
 
         /// <summary>
-        /// Fired whenever the text in the left hex column is changed.
+        /// Fired whenever the text in the left hex column is changed. Plays the appropriate sound.
         /// </summary>
-        private async void LeftHexColumn_TextChanged(object sender, TextChangedEventArgs e)
+        private void LeftHexColumn_TextChanged(object sender, TextChangedEventArgs e)
         {
-            if (SoundManager != null)
-            {
-                await Task.Delay(TerminalViewModel.DELAY_TIME);
-                SoundManager.PlayCharacterDisplaySound();
-            }
+            SoundPlayer.PlayCharacterDisplaySound();
         }
 
         /// <summary>
-        /// Fired whenever the text in the right hex column has changed.
+        /// Fired whenever the text in the right hex column has changed. Plays the appropriate sound.
         /// </summary>
-        private async void RightHexColumn_TextChanged(object sender, TextChangedEventArgs e)
+        private void RightHexColumn_TextChanged(object sender, TextChangedEventArgs e)
         {
-            if (SoundManager != null)
-            {
-                await Task.Delay(TerminalViewModel.DELAY_TIME);
-                SoundManager.PlayCharacterDisplaySound();
-            }
+            SoundPlayer.PlayCharacterDisplaySound();
         }
 
         /// <summary>
-        /// Fired whenever the headertext changes.
+        /// Fired whenever the headertext changes. Plays the appropriate sound.
         /// </summary>
-        private async void HeaderText_TextChanged(object sender, TextChangedEventArgs e)
+        private void HeaderText_TextChanged(object sender, TextChangedEventArgs e)
         {
-            if (SoundManager != null)
-            {
-                await Task.Delay(TerminalViewModel.DELAY_TIME);
-                SoundManager.PlayCharacterDisplaySound();
-            }
+            SoundPlayer.PlayCharacterDisplaySound();
         }
 
         /// <summary>
-        /// Fired whenever the attempts remaining text is changed.
+        /// Fired whenever the attempts remaining text is changed. Plays the appropriate sound.
         /// </summary>
-        private async void AttemptsText_TextChanged(object sender, TextChangedEventArgs e)
+        private void AttemptsText_TextChanged(object sender, TextChangedEventArgs e)
         {
-            if (SoundManager != null)
-            {
-                await Task.Delay(TerminalViewModel.DELAY_TIME);
-                SoundManager.PlayCharacterDisplaySound();
-            }
+            SoundPlayer.PlayCharacterDisplaySound();
         }
     }
 }
