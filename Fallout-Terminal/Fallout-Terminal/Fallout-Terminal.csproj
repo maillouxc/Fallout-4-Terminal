@@ -116,7 +116,9 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Resources\Images\TerminalScreenBackground.png" />
+    <Resource Include="Resources\Images\TerminalScreenBackground.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
   </ItemGroup>
   <ItemGroup>
     <Content Include="bin\Debug\Fallout-Terminal.exe" />
