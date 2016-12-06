@@ -156,20 +156,21 @@ namespace Fallout_Terminal.Model
             int potentialPasswordsRemaining = PasswordManager.PotentialPasswords.Count;
             if (PasswordManager.PotentialPasswords.Count > 1)
             {
-                TryAgainPoint:
+                bool success = false;
+                while(!success)
+                {
                     int rand = RandomProvider.Next(0, potentialPasswordsRemaining - 1);
                     string passwordToRemove = PasswordManager.PotentialPasswords.ElementAt(rand);
-                    if (passwordToRemove.Length == PasswordManager.GetNumberOfCorrectChars(passwordToRemove))
+                    if (passwordToRemove.Length != PasswordManager.GetNumberOfCorrectChars(passwordToRemove))
                     {
-                        // If this is actually the correct password, we can't remove it!
-                        goto TryAgainPoint; // Fight me bro.
+                        PasswordManager.PotentialPasswords.Remove(passwordToRemove);
+                        MemoryDump.Remove(passwordToRemove);
+                        success = true;
                     }
-                PasswordManager.PotentialPasswords.Remove(passwordToRemove);
-                MemoryDump.Remove(passwordToRemove);
+                }
                 InputColumn.AddLine(">Dud Removed.");
                 InputColumn.AddLine(">");
             }
-
         }
 
         /// <summary>

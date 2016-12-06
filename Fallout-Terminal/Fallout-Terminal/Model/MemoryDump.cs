@@ -132,6 +132,7 @@ namespace Fallout_Terminal.Model
                 }
                 else if ((position + i) >= (LENGTH / 2))
                 {
+                    // Passwords shouldn't break between the two dump columns. That's just the way the game does it, as far as I can tell.
                     return false;
                 }
             }
