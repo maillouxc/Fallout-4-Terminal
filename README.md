@@ -1,4 +1,8 @@
 # Fallout-4-Terminal
+
+## How to Run:
+Download the repository as a .zip, navigate to the bin/release folder, and run the .exe.
+
 My attempt to recreate the hacking minigame from the terminals in Fallout 4. (The core concept of the minigame is similar in Fallout 3 
 and New Vegas as well, but the exact execution is slightly different in each one. My implementation is intended to model as closely as 
 possible the way it is done in FO4.)
@@ -11,9 +15,10 @@ UPDATE: FINISHED! FINALLY! Er, well, as finished as I'm going to make it. It's n
 gotten all the knowledge and experience that this program can give me, and I need to move on to other things.
 
 TO POTENTIAL CONTRIBUTORS: There are PLENTY of things left to do here. For example, make the cursor in the input column blink, fix bugs, 
-fix the bug that occurs when a password spans between the two columns, Implement a journal system once you log in, where the user can
-enter text and save it. Improve the code documentation. Write tests. Refactor! Improve the UI. The list goes, on and these items are
-all great for building experience. Working in a codebase that you didn't write is a CRITICAL skill for new developers to build.
+Implement a journal system once you log in, where the user can enter text and save it. Improve the code documentation. Write tests.
+Refactor! Improve the UI. The list goes, on and these items are all great for building experience. Working in a codebase that you didn't 
+write is a CRITICAL skill for new developers to build.
+
 Submit your pull requests here with changes, and I will review and merge them regularly.
 
 I'd absolutely love any feedback (positive or negative) or suggestions that anyone is willing to provide, as this is a learning 
