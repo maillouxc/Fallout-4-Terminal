@@ -3,6 +3,7 @@
 ## How to Run:
 Download the repository as a .zip, navigate to the bin/release folder, and run the .exe.
 
+## Description
 My attempt to recreate the hacking minigame from the terminals in Fallout 4. (The core concept of the minigame is similar in Fallout 3 
 and New Vegas as well, but the exact execution is slightly different in each one. My implementation is intended to model as closely as 
 possible the way it is done in FO4.)
@@ -14,7 +15,8 @@ I figured I'd try to create this in C# so I could learn what life is like on the
 UPDATE: FINISHED! FINALLY! Er, well, as finished as I'm going to make it. It's not exactly where I wanted it to be, but I think I've
 gotten all the knowledge and experience that this program can give me, and I need to move on to other things.
 
-TO POTENTIAL CONTRIBUTORS: There are PLENTY of things left to do here. For example, make the cursor in the input column blink, fix bugs, 
+## TO POTENTIAL CONTRIBUTORS: 
+There are PLENTY of things left to do here. For example, make the cursor in the input column blink, fix bugs, 
 Implement a journal system once you log in, where the user can enter text and save it. Improve the code documentation. Write tests.
 Refactor! Improve the UI. The list goes, on and these items are all great for building experience. Working in a codebase that you didn't 
 write is a CRITICAL skill for new developers to build.
@@ -29,4 +31,5 @@ anything in this repository, although I would ask that you give me credit if you
 
 If Bethesda decides that this infringes on copyright, I will take it down if requested.
 
-Random Trivia: The game is basically a combination of the old game mastermind, and a hex dump program. (Just google that one).
+## Random Trivia: 
+The game is basically a combination of the old game mastermind, and a hex dump program. (Just google that one).
