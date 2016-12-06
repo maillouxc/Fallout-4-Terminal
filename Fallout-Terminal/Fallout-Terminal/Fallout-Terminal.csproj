@@ -131,29 +131,59 @@
     <Content Include="bin\Release\Fallout-Terminal.vshost.exe" />
     <Content Include="bin\Release\Resources\Sounds\powerOff.wav" />
     <Content Include="bin\Release\Resources\Sounds\powerOn.wav" />
-    <Content Include="Resources\Sounds\correctPassword.wav" />
-    <Content Include="Resources\Sounds\enterKey.wav" />
+    <Content Include="Resources\Sounds\correctPassword.wav">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\Sounds\enterKey.wav">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="Resources\Sounds\powerOff.wav">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Resources\Sounds\powerOn.wav">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="Resources\Sounds\typing1.wav" />
-    <Content Include="Resources\Sounds\typing10.wav" />
-    <Content Include="Resources\Sounds\typing11.wav" />
-    <Content Include="Resources\Sounds\typing2.wav" />
-    <Content Include="Resources\Sounds\typing3.wav" />
-    <Content Include="Resources\Sounds\typing4.wav" />
-    <Content Include="Resources\Sounds\typing5.wav" />
-    <Content Include="Resources\Sounds\typing6.wav" />
-    <Content Include="Resources\Sounds\typing7.wav" />
-    <Content Include="Resources\Sounds\typing8.wav" />
-    <Content Include="Resources\Sounds\typing9.wav" />
-    <Content Include="Resources\Sounds\wrongPassword.wav" />
+    <Content Include="Resources\Sounds\typing1.wav">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\Sounds\typing10.wav">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\Sounds\typing11.wav">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\Sounds\typing2.wav">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\Sounds\typing3.wav">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\Sounds\typing4.wav">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\Sounds\typing5.wav">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\Sounds\typing6.wav">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\Sounds\typing7.wav">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\Sounds\typing8.wav">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\Sounds\typing9.wav">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\Sounds\wrongPassword.wav">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Resources\Misc\words.txt" />
+    <Resource Include="Resources\Misc\words.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
