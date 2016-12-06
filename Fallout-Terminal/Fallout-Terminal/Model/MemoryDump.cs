@@ -130,6 +130,10 @@ namespace Fallout_Terminal.Model
                 {
                     return false;
                 }
+                else if ((position + i) >= (LENGTH / 2))
+                {
+                    return false;
+                }
             }
             // Is there another password immediately to the right?
             if ((position + (passwords[0].Length) + 1 <= LENGTH))
