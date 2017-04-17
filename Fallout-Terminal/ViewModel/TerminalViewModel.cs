@@ -488,9 +488,9 @@ namespace Fallout_Terminal.ViewModel
             IsLockedOut = true; // This will freeze player input.
             ClearScreen();
             await Task.Delay(100);
-            RobcoTextCurrentlyDisplayed = ">Accss Granted. Greetings, Vault Dweller.";
+            RobcoTextCurrentlyDisplayed = ">Access Granted. Greetings, Vault Dweller.";
             NotifyBinding("RobcoTextCurrentlyDisplayed");
-            AttemptsTextCurrentlyDisplayed = "Ideas? Please, help improve this project \n by making your own changes at \n GitHub.com/maillouxc/Fallout-4-Terminal. \n Thanks for playing.";
+            AttemptsTextCurrentlyDisplayed = "Ideas? Bugs? Please, help improve this project \n by making your own changes or filing bug reports at \n GitHub.com/maillouxc/Fallout-4-Terminal. \n Thanks for playing.";
             NotifyBinding("AttemptsTextCurrentlyDisplayed");
         }
     }
