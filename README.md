@@ -9,9 +9,6 @@ I'm doing this as an exercise to build my own skills, especially with technologi
 programming project in a while, and my first one on GitHub. Since the majority of my programming life has been spent in the Java world, 
 I figured I'd try to create this in C# so I could learn what life is like on the .NET framework side of things.
 
-UPDATE: FINISHED! FINALLY! Er, well, as finished as I'm going to make it. It's not exactly where I wanted it to be, but I think I've
-gotten all the knowledge and experience that this program can give me, and I need to move on to other things.
-
 ## TO POTENTIAL CONTRIBUTORS: 
 There are PLENTY of things left to do here. See the issues section for guidance. Working in a codebase that you didn't 
 write is a CRITICAL skill for new developers to build.
